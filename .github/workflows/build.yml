@@ -1,4 +1,4 @@
-name: Build Windows EXE
+name: Build App
 
 on:
   workflow_dispatch:
@@ -20,20 +20,51 @@ jobs:
 
       - run: npm install
 
-      - run: npm run dist
+      - run: npm run dist:win
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 빌드 결과 업로드
+      - name: Windows 빌드 업로드
         uses: actions/upload-artifact@v4
         with:
           name: bookmark-organizer-windows
           path: dist/*.exe
 
-      - name: 릴리스에 EXE 첨부
+      - name: 릴리스에 Windows EXE 첨부
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-mac:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm install
+
+      - run: npm run dist:mac
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: macOS 빌드 업로드
+        uses: actions/upload-artifact@v4
+        with:
+          name: bookmark-organizer-macos
+          path: dist/*.dmg
+
+      - name: 릴리스에 macOS DMG 첨부
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.dmg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
