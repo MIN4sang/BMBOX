@@ -1,0 +1,33 @@
+name: Build Windows EXE
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-win:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm install
+
+      - run: npm run dist
+
+      - name: 빌드 결과 업로드
+        uses: actions/upload-artifact@v4
+        with:
+          name: bookmark-organizer-windows
+          path: dist/*.exe
+
+      - name: 릴리스에 EXE 첨부
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.exe
