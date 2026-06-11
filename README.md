@@ -8,7 +8,7 @@ X(트위터) 북마크를 카테고리·폴더로 정리하는 도구입니다.
 
 ### 1. 확장프로그램으로 북마크 추출
 `x-bookmark-extension.zip` (확장프로그램)을 설치해서 북마크를 `.csv`로 추출합니다.
-👉 [확장프로그램 다운로드](https://drive.google.com/file/d/1MamyLBMk9zFe54uMGu9b2t_QzuwoOuN4/view?usp=sharing)
+👉 [확장프로그램 다운로드](https://drive.google.com/file/d/1YQVt4GP5iKwsGYiBqWxUdVNOoAUi3ALq/view?usp=sharing)
 
 ### 2. 태그 규칙 설정
 `content.js` 파일의 `TAG_RULES`를 원하는 대로 수정합니다.
