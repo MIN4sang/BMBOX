@@ -1,0 +1,28 @@
+{
+  "name": "bookmark-organizer",
+  "version": "1.0.0",
+  "description": "X 북마크 정리기",
+  "author": "미나상",
+  "license": "MIT",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.minasang.bookmark-organizer",
+    "productName": "북마크정리기",
+    "files": ["main.js", "index.html"],
+    "win": {
+      "target": ["nsis", "portable"]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
