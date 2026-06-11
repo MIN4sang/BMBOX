@@ -79,7 +79,7 @@
   .cat{margin-bottom:4px}
   .cat-head{
     display:flex; align-items:center; gap:6px; padding:8px 8px; border-radius:9px;
-    font-weight:700; font-size:14px; user-select:none;
+    font-weight:700; font-size:14px; user-select:none; cursor:pointer;
   }
   .cat-head:hover{background:var(--surface-2)}
   .cat-head .twist{font-size:11px; transition:.15s; opacity:.6}
@@ -89,11 +89,21 @@
   .cat-head .mini{opacity:0; font-size:14px; padding:0 4px; color:var(--muted)}
   .cat-head:hover .mini{opacity:.8}
   .cat-head .mini:hover{color:var(--accent)}
+  .cat-handle{
+    cursor:grab; opacity:0; font-size:14px; color:var(--muted);
+    padding:0 2px; flex-shrink:0; transition:opacity .12s; user-select:none;
+  }
+  .cat-head:hover .cat-handle{opacity:.5}
+  .cat-handle:active{cursor:grabbing}
+  .cat.cat-dragging{opacity:.4}
+  .cat.cat-drop-above{border-top:2px solid var(--accent)}
+  .cat.cat-drop-below{border-bottom:2px solid var(--accent)}
   .folders{padding-left:10px; overflow:hidden}
   .cat.collapsed .folders{display:none}
   .folder{
     padding:7px 10px; border-radius:9px; font-size:13.5px; display:flex; gap:6px;
     align-items:center; justify-content:space-between; color:var(--text); transition:.12s;
+    cursor:pointer;
   }
   .folder:hover{background:var(--surface-2)}
   .folder.active{background:var(--accent); color:var(--accent-text)}
@@ -225,6 +235,20 @@
   /* ---------- 모달 ---------- */
   .overlay{position:fixed; inset:0; background:rgba(0,0,0,.38); display:none; align-items:center; justify-content:center; z-index:1000; padding:20px}
   .modal-overlay{position:fixed; inset:0; background:rgba(0,0,0,.38); display:flex; align-items:center; justify-content:center; z-index:1100; padding:20px}
+
+  /* 태그 자동완성 */
+  .tag-ac-wrap{position:relative}
+  .tag-ac-drop{
+    position:absolute; top:calc(100% + 4px); left:0; right:0; z-index:9999;
+    background:var(--card); border:1px solid var(--border); border-radius:10px;
+    box-shadow:0 4px 16px var(--shadow); max-height:180px; overflow-y:auto;
+    display:none;
+  }
+  .tag-ac-drop.show{display:block}
+  .tag-ac-item{
+    padding:8px 14px; font-size:13.5px; cursor:pointer; transition:.1s;
+  }
+  .tag-ac-item:hover, .tag-ac-item.active{background:var(--accent-soft); color:var(--accent)}
 
   /* 토스트 알림 */
   .toast{
@@ -392,7 +416,7 @@
 </div>
 
 <!-- 숨김 파일 입력 -->
-<input type="file" id="csvFile" accept=".csv" style="display:none">
+<input type="file" id="csvFile" accept=".csv" multiple style="display:none">
 <input type="file" id="backupFile" accept=".json" style="display:none">
 <input type="file" id="logoFile" accept=".png,.jpg,.jpeg,.gif,image/png,image/jpeg,image/gif" style="display:none">
 
@@ -644,7 +668,8 @@ function renderSidebar(){
   state.categories.forEach(cat=>{
     const div=document.createElement('div'); div.className='cat'+(cat.collapsed?' collapsed':'');
     const head=document.createElement('div'); head.className='cat-head';
-    head.innerHTML=`<span class="twist">▼</span>
+    head.innerHTML=`<span class="cat-handle" title="드래그해서 순서 변경">⠿</span>
+      <span class="twist">▼</span>
       <span class="name">${esc((cat.emoji?cat.emoji+' ':'')+cat.name)}</span>
       <span class="count">${countCat(cat)}</span>
       <span class="mini" data-act="addFolder" title="폴더 추가">＋</span>
@@ -655,7 +680,41 @@ function renderSidebar(){
       if(act==='addFolder'){ e.stopPropagation(); addFolder(cat); }
       else if(act==='editCat'){ e.stopPropagation(); editCategory(cat); }
       else if(act==='delCat'){ e.stopPropagation(); delCategory(cat); }
-      else { cat.collapsed=!cat.collapsed; save(); renderSidebar(); }
+      else if(!e.target.classList.contains('cat-handle')){ cat.collapsed=!cat.collapsed; save(); renderSidebar(); }
+    });
+
+    // 카테고리 드래그 핸들
+    const catHandle=head.querySelector('.cat-handle');
+    head.draggable=false;
+    catHandle.addEventListener('mousedown',()=>{ head.draggable=true; });
+    catHandle.addEventListener('mouseup',()=>{ head.draggable=false; });
+    head.addEventListener('dragstart',ev=>{
+      if(!head.draggable){ ev.preventDefault(); return; }
+      ev.dataTransfer.setData('cat-drag', cat.id);
+      ev.dataTransfer.effectAllowed='move';
+      draggingCatId=cat.id;
+      setTimeout(()=>div.classList.add('cat-dragging'),0);
+    });
+    head.addEventListener('dragend',()=>{
+      head.draggable=false; div.classList.remove('cat-dragging');
+      draggingCatId=null;
+      document.querySelectorAll('.cat').forEach(el=>el.classList.remove('cat-drop-above','cat-drop-below'));
+    });
+    div.addEventListener('dragover',ev=>{
+      if(!draggingCatId || draggingCatId===cat.id) return;
+      ev.preventDefault();
+      const rect=div.getBoundingClientRect();
+      div.classList.remove('cat-drop-above','cat-drop-below');
+      div.classList.add(ev.clientY<rect.top+rect.height/2?'cat-drop-above':'cat-drop-below');
+    });
+    div.addEventListener('dragleave',()=>div.classList.remove('cat-drop-above','cat-drop-below'));
+    div.addEventListener('drop',ev=>{
+      div.classList.remove('cat-drop-above','cat-drop-below');
+      if(!draggingCatId || draggingCatId===cat.id) return;
+      ev.preventDefault(); ev.stopPropagation();
+      const rect=div.getBoundingClientRect();
+      const before=ev.clientY<rect.top+rect.height/2;
+      reorderCategory(draggingCatId, cat.id, before);
     });
     div.appendChild(head);
 
@@ -816,6 +875,17 @@ let selMode = false;
 let selIds = new Set();
 let skipDelConfirm = false;
 let draggingFolderId = null;
+let draggingCatId = null;
+
+function reorderCategory(srcId, tgtId, before){
+  const srcIdx=state.categories.findIndex(c=>c.id===srcId);
+  const tgtIdx=state.categories.findIndex(c=>c.id===tgtId);
+  if(srcIdx<0||tgtIdx<0) return;
+  const [cat]=state.categories.splice(srcIdx,1);
+  const newIdx=state.categories.findIndex(c=>c.id===tgtId);
+  state.categories.splice(before ? newIdx : newIdx+1, 0, cat);
+  save(); renderSidebar();
+}
 
 function enterSelMode(){
   selMode=true; selIds.clear();
@@ -1107,14 +1177,17 @@ function openMovePicker(bm, anchor){
   const folders=allFolders();
   let opts = `<option value="">— 미분류 —</option>`;
   state.categories.forEach(c=>{
-    if(!c.folders.length) return;
     opts+=`<optgroup label="${esc((c.emoji?c.emoji+' ':'')+c.name)}">`;
-    c.folders.forEach(f=>opts+=`<option value="${f.id}" ${bm.folderId===f.id?'selected':''}>${esc(f.name)}</option>`);
+    if(c.folders.length){
+      c.folders.forEach(f=>opts+=`<option value="${f.id}" ${bm.folderId===f.id?'selected':''}>${esc(f.name)}</option>`);
+    } else {
+      opts+=`<option disabled style="color:var(--muted)">(폴더 없음)</option>`;
+    }
     opts+=`</optgroup>`;
   });
   openModal(`<h2>폴더로 이동</h2>
     <label>이 북마크를 넣을 폴더</label>
-    <select id="moveSel">${opts}</select>
+    <select id="moveSel" size="8" style="width:100%;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-family:inherit;font-size:14px;padding:4px">${opts}</select>
     ${folders.length?'':'<div class="hint">아직 폴더가 없어요. 좌측 [카테고리 생성]으로 먼저 폴더를 만들어 주세요.</div>'}
     <div class="modal-actions">
       <button class="btn ghost" onclick="closeModal()">닫기</button>
@@ -1133,11 +1206,102 @@ function delBookmark(bm){
     state.bookmarks=state.bookmarks.filter(b=>b.id!==bm.id); save(); render(); closeModal();
   };
 }
+function getAllTags(){
+  const set=new Set();
+  state.bookmarks.forEach(b=>(b.tags||[]).forEach(t=>{ if(t&&t!=='미분류') set.add(t); }));
+  return [...set].sort((a,b)=>a.localeCompare(b,'ko'));
+}
+
+function initTagAutocomplete(input, drop){
+  let activeIdx=-1;
+
+  function getCurrentWord(){
+    // 커서 위치 기준 현재 입력 중인 마지막 태그 단어
+    const val=input.value;
+    const pos=input.selectionStart;
+    const before=val.slice(0,pos);
+    const parts=before.split('/');
+    return parts[parts.length-1].trim();
+  }
+
+  function replaceCurrentWord(word){
+    const val=input.value;
+    const pos=input.selectionStart;
+    const before=val.slice(0,pos);
+    const after=val.slice(pos);
+    const parts=before.split('/');
+    parts[parts.length-1]=' '+word+' ';
+    const newVal=parts.join('/')+after;
+    input.value=newVal;
+    // 커서를 삽입된 태그 뒤로
+    const newPos=(parts.join('/')).length;
+    input.setSelectionRange(newPos,newPos);
+  }
+
+  function showDrop(items){
+    activeIdx=-1;
+    drop.innerHTML=items.map((t,i)=>`<div class="tag-ac-item" data-idx="${i}">${esc(t)}</div>`).join('');
+    drop.classList.toggle('show', items.length>0);
+    drop.querySelectorAll('.tag-ac-item').forEach(el=>{
+      el.addEventListener('mousedown',ev=>{
+        ev.preventDefault();
+        replaceCurrentWord(el.textContent);
+        hideDrop();
+        input.focus();
+      });
+    });
+  }
+
+  function hideDrop(){ drop.classList.remove('show'); activeIdx=-1; }
+
+  function updateActive(){
+    drop.querySelectorAll('.tag-ac-item').forEach((el,i)=>{
+      el.classList.toggle('active', i===activeIdx);
+      if(i===activeIdx) el.scrollIntoView({block:'nearest'});
+    });
+  }
+
+  input.addEventListener('input',()=>{
+    const word=getCurrentWord();
+    if(!word){ hideDrop(); return; }
+    const all=getAllTags();
+    const matched=all.filter(t=>t.toLowerCase().includes(word.toLowerCase()) && t!==word);
+    showDrop(matched.slice(0,10));
+  });
+
+  input.addEventListener('keydown',ev=>{
+    const items=drop.querySelectorAll('.tag-ac-item');
+    if(!drop.classList.contains('show')||!items.length) return;
+    if(ev.key==='ArrowDown'){
+      ev.preventDefault();
+      activeIdx=Math.min(activeIdx+1, items.length-1);
+      updateActive();
+    } else if(ev.key==='ArrowUp'){
+      ev.preventDefault();
+      activeIdx=Math.max(activeIdx-1, 0);
+      updateActive();
+    } else if(ev.key==='Enter'||ev.key==='Tab'){
+      if(activeIdx>=0){
+        ev.preventDefault();
+        replaceCurrentWord(items[activeIdx].textContent);
+        hideDrop();
+      }
+    } else if(ev.key==='Escape'){
+      hideDrop();
+    }
+  });
+
+  input.addEventListener('blur',()=>setTimeout(hideDrop,150));
+}
+
 function editBookmark(bm){
   const linkInputs=(bm.links||[]).map((u,i)=>`<div class="linkrow"><input type="text" class="exlink" value="${esc(u)}"><button class="btn" onclick="this.parentElement.remove()">－</button></div>`).join('');
   openModal(`<h2>북마크 수정</h2>
     <label>태그 (/ 로 구분)</label>
-    <input type="text" id="eTags" value="${esc((bm.tags||[]).join(' / '))}">
+    <div class="tag-ac-wrap">
+      <input type="text" id="eTags" value="${esc((bm.tags||[]).join(' / '))}" autocomplete="off">
+      <div class="tag-ac-drop" id="tagAcDrop"></div>
+    </div>
     <div class="row">
       <div><label>작성자</label><input type="text" id="eAuthor" value="${esc(bm.author)}"></div>
       <div><label>계정</label><input type="text" id="eHandle" value="${esc(bm.handle)}"></div>
@@ -1178,6 +1342,9 @@ function editBookmark(bm){
     bm.folderId=document.getElementById('eFolder').value||null;
     save(); render(); closeModal();
   };
+
+  // 태그 자동완성
+  initTagAutocomplete(document.getElementById('eTags'), document.getElementById('tagAcDrop'));
 }
 function openFull(bm){
   const who=[bm.author,bm.handle].filter(Boolean).join(' | ');
@@ -1326,7 +1493,9 @@ logoSizeNum.oninput = e=>{
 function exportBackup(){
   const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download=`북마크정리기_백업_${new Date().toISOString().slice(0,10)}.json`; a.click(); URL.revokeObjectURL(a.href);
+  const now=new Date(); const pad=n=>String(n).padStart(2,'0');
+  const dateStr=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+  a.download=`북마크정리기_백업_${dateStr}.json`; a.click(); URL.revokeObjectURL(a.href);
 }
 
 /* ============================================================
@@ -1334,9 +1503,21 @@ function exportBackup(){
    ============================================================ */
 document.getElementById('btnLoad').onclick=()=>document.getElementById('csvFile').click();
 document.getElementById('csvFile').onchange=e=>{
-  const f=e.target.files[0]; if(!f) return;
-  const r=new FileReader(); r.onload=()=>{ const n=importCSV(r.result); state.ui.page=1; render(); showToast(n+'개의 새 북마크를 불러왔어요. (이미 있던 항목은 건너뜀)'); };
-  r.readAsText(f,'utf-8'); e.target.value='';
+  const files=[...e.target.files]; if(!files.length) return;
+  let total=0, done=0;
+  files.forEach(f=>{
+    const r=new FileReader();
+    r.onload=()=>{
+      total+=importCSV(r.result);
+      done++;
+      if(done===files.length){
+        state.ui.page=1; render();
+        showToast(`${files.length}개 파일에서 ${total}개의 새 북마크를 불러왔어요. (이미 있던 항목은 건너뜀)`);
+      }
+    };
+    r.readAsText(f,'utf-8');
+  });
+  e.target.value='';
 };
 document.getElementById('backupFile').onchange=e=>{
   const f=e.target.files[0]; if(!f) return;
