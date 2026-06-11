@@ -332,7 +332,7 @@
     <div class="sidebar-foot">
       <button class="foot-btn" id="btnSettings">⚙ 환경설정</button>
       <div class="credit"><a href="https://x.com/IMYM3N4" target="_blank" rel="noopener">미나상</a></div>
-      <div class="credit" style="opacity:.6;margin-top:2px">북마크 보관함 ver.1</div>
+      <div class="credit" style="opacity:.6;margin-top:2px">정리기 v21</div>
     </div>
   </aside>
 
@@ -906,10 +906,21 @@ function reorderFolder(srcCid, srcFid, tgtCid, tgtFid, before){
 }
 
 function addFolder(cat){
-  const name=prompt('새 폴더 이름:'); if(!name||!name.trim()) return;
-  cat.folders.push({id:uid(), name:name.trim()});
-  cat.collapsed=false; // 폴더 추가 후 펼쳐서 보이게
-  save(); renderSidebar();
+  openModal(`<h2>새 폴더</h2>
+    <div class="row"><input type="text" id="newFolderName" placeholder="폴더 이름"></div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">취소</button>
+      <button class="btn primary" id="okAddFolder">만들기</button>
+    </div>`);
+  const inp=document.getElementById('newFolderName');
+  inp.focus();
+  document.getElementById('okAddFolder').onclick=()=>{
+    const name=inp.value.trim(); if(!name) return;
+    cat.folders.push({id:uid(), name});
+    cat.collapsed=false;
+    save(); renderSidebar(); closeModal();
+  };
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('okAddFolder').click(); });
 }
 function editCategory(cat){
   openModal(`<h2>카테고리 수정</h2>
@@ -928,22 +939,47 @@ function editCategory(cat){
   };
 }
 function delCategory(cat){
-  if(!confirm(`'${cat.name}' 카테고리와 그 안의 폴더를 삭제할까요?\n(북마크는 삭제되지 않고 '미분류'로 이동합니다)`)) return;
-  cat.folders.forEach(f=>state.bookmarks.forEach(b=>{ if(b.folderId===f.id) b.folderId=null; }));
-  state.categories=state.categories.filter(c=>c.id!==cat.id);
-  if(state.ui.view.type==='folder'&&!folderById(state.ui.view.folderId)) state.ui.view={type:'all'};
-  save(); render();
+  openModal(`<h2>카테고리 삭제</h2>
+    <p style="color:var(--muted)">'<b>${esc(cat.name)}</b>' 카테고리와 그 안의 폴더를 삭제할까요?<br>북마크는 삭제되지 않고 미분류로 이동합니다.</p>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">취소</button>
+      <button class="btn primary" id="okDelCat" style="background:#e05;border-color:#e05">삭제</button>
+    </div>`);
+  document.getElementById('okDelCat').onclick=()=>{
+    cat.folders.forEach(f=>state.bookmarks.forEach(b=>{ if(b.folderId===f.id) b.folderId=null; }));
+    state.categories=state.categories.filter(c=>c.id!==cat.id);
+    if(state.ui.view.type==='folder'&&!folderById(state.ui.view.folderId)) state.ui.view={type:'all'};
+    save(); render(); closeModal();
+  };
 }
 function editFolder(cat,f){
-  const name=prompt('폴더 이름 수정:', f.name); if(name===null) return;
-  if(name.trim()){ f.name=name.trim(); save(); render(); }
+  openModal(`<h2>폴더 이름 수정</h2>
+    <div class="row"><input type="text" id="editFolderName" value="${esc(f.name)}"></div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">취소</button>
+      <button class="btn primary" id="okEditFolder">저장</button>
+    </div>`);
+  const inp=document.getElementById('editFolderName');
+  inp.focus(); inp.select();
+  document.getElementById('okEditFolder').onclick=()=>{
+    const name=inp.value.trim(); if(!name) return;
+    f.name=name; save(); render(); closeModal();
+  };
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('okEditFolder').click(); });
 }
 function delFolder(cat,f){
-  if(!confirm(`'${f.name}' 폴더를 삭제할까요?\n(북마크는 '미분류'로 이동합니다)`)) return;
-  state.bookmarks.forEach(b=>{ if(b.folderId===f.id) b.folderId=null; });
-  cat.folders=cat.folders.filter(x=>x.id!==f.id);
-  if(state.ui.view.type==='folder'&&state.ui.view.folderId===f.id) state.ui.view={type:'all'};
-  save(); render();
+  openModal(`<h2>폴더 삭제</h2>
+    <p style="color:var(--muted)">'<b>${esc(f.name)}</b>' 폴더를 삭제할까요?<br>북마크는 삭제되지 않고 미분류로 이동합니다.</p>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">취소</button>
+      <button class="btn primary" id="okDelFolder" style="background:#e05;border-color:#e05">삭제</button>
+    </div>`);
+  document.getElementById('okDelFolder').onclick=()=>{
+    state.bookmarks.forEach(b=>{ if(b.folderId===f.id) b.folderId=null; });
+    cat.folders=cat.folders.filter(x=>x.id!==f.id);
+    if(state.ui.view.type==='folder'&&state.ui.view.folderId===f.id) state.ui.view={type:'all'};
+    save(); render(); closeModal();
+  };
 }
 
 /* ============================================================
@@ -995,7 +1031,6 @@ function openDuplicateCheck(){
       <button class="btn primary" id="okDedup">중복 ${extra}개 정리</button>
     </div>`);
   document.getElementById('okDedup').onclick=()=>{
-    if(!confirm(`중복 ${extra}개를 삭제할까요? 되돌릴 수 없습니다.`)) return;
     const remove=new Set();
     groups.forEach(g=>{
       const keep = g.find(b=>b.folderId) || g[0];
@@ -1026,8 +1061,15 @@ function openMovePicker(bm, anchor){
   document.getElementById('okMove').onclick=()=>{ moveBookmark(bm.id, document.getElementById('moveSel').value||null); closeModal(); };
 }
 function delBookmark(bm){
-  if(!confirm('이 북마크를 정리기에서 삭제할까요?')) return;
-  state.bookmarks=state.bookmarks.filter(b=>b.id!==bm.id); save(); render();
+  openModal(`<h2>북마크 삭제</h2>
+    <p style="color:var(--muted)">이 북마크를 삭제할까요? 되돌릴 수 없어요.</p>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">취소</button>
+      <button class="btn primary" id="okDelBm" style="background:#e05;border-color:#e05">삭제</button>
+    </div>`);
+  document.getElementById('okDelBm').onclick=()=>{
+    state.bookmarks=state.bookmarks.filter(b=>b.id!==bm.id); save(); render(); closeModal();
+  };
 }
 function editBookmark(bm){
   const linkInputs=(bm.links||[]).map((u,i)=>`<div class="linkrow"><input type="text" class="exlink" value="${esc(u)}"><button class="btn" onclick="this.parentElement.remove()">－</button></div>`).join('');
@@ -1205,7 +1247,15 @@ logoSizeNum.oninput = e=>{
 };
   document.getElementById('expBackup').onclick=exportBackup;
   document.getElementById('impBackup').onclick=()=>document.getElementById('backupFile').click();
-  document.getElementById('resetAll').onclick=()=>{ if(confirm('모든 데이터(북마크·폴더·설정)를 지울까요? 되돌릴 수 없습니다.')){ localStorage.removeItem(STORE_KEY); location.reload(); } };
+  document.getElementById('resetAll').onclick=()=>{
+    openModal(`<h2>전체 초기화</h2>
+      <p style="color:var(--muted)">모든 데이터(북마크·폴더·설정)를 지울까요?<br>되돌릴 수 없습니다.</p>
+      <div class="modal-actions">
+        <button class="btn ghost" onclick="closeModal()">취소</button>
+        <button class="btn primary" id="okReset" style="background:#e05;border-color:#e05">초기화</button>
+      </div>`);
+    document.getElementById('okReset').onclick=()=>{ localStorage.removeItem(STORE_KEY); location.reload(); };
+  };
 }
 
 function exportBackup(){
