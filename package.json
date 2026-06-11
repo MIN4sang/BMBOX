@@ -20,7 +20,7 @@
   },
   "build": {
     "appId": "com.minasang.bookmark-organizer",
-    "productName": "북마크정리기",
+    "productName": "북마크 보관함",
     "files": ["main.js", "preload.js", "index.html"],
     "publish": {
       "provider": "github",
@@ -40,7 +40,9 @@
       "category": "public.app-category.productivity"
     },
     "dmg": {
-      "title": "북마크정리기"
+      "title": "북마크 보관함",
+      "background": null,
+      "window": { "width": 540, "height": 380 }
     }
   }
 }
