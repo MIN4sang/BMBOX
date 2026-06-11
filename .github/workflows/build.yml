@@ -9,6 +9,8 @@ on:
 jobs:
   build-win:
     runs-on: windows-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -19,6 +21,8 @@ jobs:
       - run: npm install
 
       - run: npm run dist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 빌드 결과 업로드
         uses: actions/upload-artifact@v4
