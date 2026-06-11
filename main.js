@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
 
@@ -15,6 +15,18 @@ function createWindow() {
     }
   });
   win.loadFile(path.join(__dirname, 'index.html'));
+
+  // 외부 링크는 기본 브라우저로 열기
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url);
+    return { action: 'deny' };
+  });
+  win.webContents.on('will-navigate', (e, url) => {
+    if (!url.startsWith('file://')) {
+      e.preventDefault();
+      shell.openExternal(url);
+    }
+  });
 }
 
 app.whenReady().then(() => {
