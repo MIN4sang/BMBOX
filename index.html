@@ -21,10 +21,10 @@
     --border: color-mix(in srgb, var(--accent) 28%, var(--bg));
     --border-soft: color-mix(in srgb, var(--accent) 16%, var(--bg));
     --muted: color-mix(in srgb, var(--text) 45%, var(--bg));
-    --accent-soft: color-mix(in srgb, var(--accent) 14%, #fff);
+    --accent-soft: color-mix(in srgb, var(--accent) 12%, var(--bg));
     --accent-text: #fff;
     --danger:#ff4d6d;
-    --shadow: color-mix(in srgb, var(--accent) 26%, transparent);
+    --shadow: rgba(0,0,0,.08);
   }
   *{box-sizing:border-box}
   html,body{height:100%}
@@ -225,6 +225,15 @@
   /* ---------- 모달 ---------- */
   .overlay{position:fixed; inset:0; background:rgba(0,0,0,.38); display:none; align-items:center; justify-content:center; z-index:1000; padding:20px}
   .modal-overlay{position:fixed; inset:0; background:rgba(0,0,0,.38); display:flex; align-items:center; justify-content:center; z-index:1100; padding:20px}
+
+  /* 토스트 알림 */
+  .toast{
+    position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(12px);
+    background:var(--text); color:var(--bg); padding:11px 22px; border-radius:999px;
+    font-size:14px; font-weight:600; white-space:nowrap; z-index:9000;
+    opacity:0; transition:opacity .22s, transform .22s; pointer-events:none;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
   .overlay.show{display:flex}
   .modal{background:var(--bg); border:1px solid var(--border); border-radius:20px; width:560px; max-width:100%; max-height:88vh; overflow:auto; padding:24px; box-shadow:0 20px 50px rgba(0,0,0,.3)}
   .modal h2{margin:0 0 16px; font-size:20px; color:var(--accent)}
@@ -248,8 +257,17 @@
   .full-tags{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px}
   .full-meta{font-size:13px; color:var(--muted); margin-bottom:12px}
   .full-content{font-size:15px; line-height:1.7; white-space:pre-wrap; word-break:break-word; margin-bottom:16px}
-  .swatches{display:flex; gap:10px; flex-wrap:wrap; margin-top:6px}
-  .swatch{width:34px; height:34px; border-radius:50%; border:2px solid #fff; box-shadow:0 0 0 1px var(--border); cursor:pointer}
+  .swatches{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; align-items:center}
+  .swatch{
+    width:40px; height:40px; border-radius:50%;
+    border:2px solid transparent; box-shadow:0 0 0 1px var(--border);
+    cursor:pointer; flex-shrink:0; overflow:hidden; position:relative;
+    transition:transform .12s, box-shadow .12s;
+  }
+  .swatch:hover{transform:scale(1.12); box-shadow:0 0 0 2px var(--accent)}
+  .swatch.sel{box-shadow:0 0 0 3px var(--accent); transform:scale(1.1)}
+  .swatch-bg{ position:absolute; inset:0; width:50%; background:var(--sw-bg) }
+  .swatch-accent{ position:absolute; inset:0; left:50%; background:var(--sw-accent) }
   .swatch.sel{box-shadow:0 0 0 3px var(--accent)}
   .linkrow{display:flex; gap:8px; margin-top:6px}
   .linkrow input{flex:1}
@@ -332,7 +350,7 @@
     <div class="sidebar-foot">
       <button class="foot-btn" id="btnSettings">⚙ 환경설정</button>
       <div class="credit"><a href="https://x.com/IMYM3N4" target="_blank" rel="noopener">미나상</a></div>
-      <div class="credit" style="opacity:.6;margin-top:2px">정리기 v21</div>
+      <div class="credit" style="opacity:.6;margin-top:2px">보관함 v1</div>
     </div>
   </aside>
 
@@ -380,6 +398,8 @@
 
 <!-- 모달 컨테이너 -->
 <div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
+<!-- 토스트 알림 -->
+<div class="toast" id="toast"></div>
 
 <script>
 /* ============================================================
@@ -408,8 +428,10 @@ const THEMES = [
   {name:'화이트앤블루', accent:'#4a90e2', bg:'#fafdff', text:'#2b3440'},
   {name:'화이트앤민트', accent:'#27b89a', bg:'#f8fffd', text:'#243a35'},
   {name:'화이트앤퍼플', accent:'#9b6cff', bg:'#fdfaff', text:'#352b40'},
+  {name:'화이트앤블랙', accent:'#222222', bg:'#ffffff', text:'#1a1a1a'},
   {name:'다크핑크', accent:'#ff6fa5', bg:'#1b1419', text:'#f2e8ec'},
   {name:'다크블루', accent:'#6aa8ff', bg:'#121821', text:'#e6edf5'},
+  {name:'블랙앤화이트', accent:'#f0f0f0', bg:'#1b1b1b', text:'#eeeeee'},
 ];
 
 function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
@@ -560,17 +582,49 @@ function viewTitle(){
    ============================================================ */
 function applyTheme(){
   const s=state.settings;
-  document.documentElement.style.setProperty('--accent', s.accent);
-  document.documentElement.style.setProperty('--bg', s.bg);
-  document.documentElement.style.setProperty('--text', s.text);
-  document.documentElement.style.setProperty('--font', FONTS[s.font]||FONTS.noto);
+  const r=document.documentElement;
+  r.style.setProperty('--accent', s.accent);
+  r.style.setProperty('--bg', s.bg);
+  r.style.setProperty('--text', s.text);
+  r.style.setProperty('--font', FONTS[s.font]||FONTS.noto);
   const cols=s.columns;
-  document.documentElement.style.setProperty('--cols',
+  r.style.setProperty('--cols',
     (!cols||cols==='auto') ? 'repeat(auto-fill, minmax(240px, 1fr))' : `repeat(${cols}, minmax(0,1fr))`);
-  // 강조색 위 글자색 (밝으면 어둡게)
-  const c=s.accent.replace('#',''); const r=parseInt(c.substr(0,2),16),g=parseInt(c.substr(2,2),16),b=parseInt(c.substr(4,2),16);
-  const lum=(0.299*r+0.587*g+0.114*b)/255;
-  document.documentElement.style.setProperty('--accent-text', lum>0.62?'#222':'#fff');
+
+  // 강조색 위 글자색
+  const ac=s.accent.replace('#','');
+  const ar=parseInt(ac.substr(0,2),16), ag=parseInt(ac.substr(2,2),16), ab=parseInt(ac.substr(4,2),16);
+  const aLum=(0.299*ar+0.587*ag+0.114*ab)/255;
+  r.style.setProperty('--accent-text', aLum>0.62?'#222':'#fff');
+
+  // bg 밝기로 다크/라이트 판별
+  const bc=s.bg.replace('#','');
+  const br=parseInt(bc.substr(0,2),16), bg2=parseInt(bc.substr(2,2),16), bb=parseInt(bc.substr(4,2),16);
+  const bgLum=(0.299*br+0.587*bg2+0.114*bb)/255;
+  const isDark = bgLum < 0.35;
+
+  if(isDark){
+    // 다크 모드: 카드/서피스를 bg보다 밝게
+    r.style.setProperty('--surface',   `color-mix(in srgb, var(--accent) 8%, color-mix(in srgb, #fff 10%, var(--bg)))`);
+    r.style.setProperty('--surface-2', `color-mix(in srgb, var(--accent) 14%, color-mix(in srgb, #fff 15%, var(--bg)))`);
+    r.style.setProperty('--card',      `color-mix(in srgb, var(--accent) 6%, color-mix(in srgb, #fff 12%, var(--bg)))`);
+    r.style.setProperty('--border',    `color-mix(in srgb, var(--accent) 22%, color-mix(in srgb, #fff 18%, var(--bg)))`);
+    r.style.setProperty('--border-soft',`color-mix(in srgb, var(--accent) 12%, color-mix(in srgb, #fff 10%, var(--bg)))`);
+    r.style.setProperty('--muted',     `color-mix(in srgb, var(--text) 60%, var(--bg))`);
+    r.style.setProperty('--shadow',    'rgba(0,0,0,.45)');
+    r.style.setProperty('--accent-soft',`color-mix(in srgb, var(--accent) 20%, var(--bg))`);
+  } else {
+    // 라이트 모드
+    r.style.setProperty('--surface',   `color-mix(in srgb, var(--accent) 4%, var(--bg))`);
+    r.style.setProperty('--surface-2', `color-mix(in srgb, var(--accent) 9%, var(--bg))`);
+    r.style.setProperty('--card',      `color-mix(in srgb, var(--accent) 3%, #fff)`);
+    r.style.setProperty('--border',    `color-mix(in srgb, var(--accent) 28%, var(--bg))`);
+    r.style.setProperty('--border-soft',`color-mix(in srgb, var(--accent) 16%, var(--bg))`);
+    r.style.setProperty('--muted',     `color-mix(in srgb, var(--text) 45%, var(--bg))`);
+    r.style.setProperty('--shadow',    'rgba(0,0,0,.08)');
+    r.style.setProperty('--accent-soft',`color-mix(in srgb, var(--accent) 12%, var(--bg))`);
+  }
+
   // 로고
   const logo=document.getElementById('logo');
   logo.innerHTML = `<img src="${s.logo||DEFAULT_LOGO}" alt="로고" style="
@@ -842,7 +896,7 @@ function doSelDelete(){
 document.getElementById('btnSelMove').onclick=()=>{
   if(!selIds.size) return;
   let opts=''; state.categories.forEach(c=>{ c.folders.forEach(f=>{ opts+=`<option value="${f.id}">${esc(c.emoji||'')} ${esc(c.name)} / ${esc(f.name)}</option>`; }); });
-  if(!opts){ alert('이동할 폴더가 없어요. 먼저 카테고리와 폴더를 만들어 주세요.'); return; }
+  if(!opts){ showToast('이동할 폴더가 없어요. 먼저 카테고리와 폴더를 만들어 주세요.'); return; }
   const ov=document.createElement('div'); ov.className='modal-overlay';
   ov.innerHTML=`<div class="modal" style="max-width:380px">
     <h2 style="margin:0 0 12px">선택 이동</h2>
@@ -870,6 +924,14 @@ const overlay=document.getElementById('overlay'), modalEl=document.getElementByI
 function openModal(html){ modalEl.innerHTML=html; overlay.classList.add('show'); }
 function closeModal(){ overlay.classList.remove('show'); modalEl.innerHTML=''; }
 overlay.addEventListener('click',e=>{ if(e.target===overlay) closeModal(); });
+
+let _toastTimer=null;
+function showToast(msg, duration=2800){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  if(_toastTimer) clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(()=>t.classList.remove('show'), duration);
+}
 
 /* ============================================================
    카테고리 / 폴더 CRUD
@@ -1038,7 +1100,7 @@ function openDuplicateCheck(){
     });
     state.bookmarks=state.bookmarks.filter(b=>!remove.has(b.id));
     save(); render(); closeModal();
-    alert(`중복 ${remove.size}개를 정리했어요.`);
+    showToast(`중복 ${remove.size}개를 정리했어요.`);
   };
 }
 function openMovePicker(bm, anchor){
@@ -1145,7 +1207,10 @@ function openFull(bm){
 function openSettings(){
   const s=state.settings;
   const sw=THEMES.map(t=>`<div class="swatch ${t.accent===s.accent&&t.bg===s.bg?'sel':''}" title="${t.name}"
-      style="background:${t.accent}" data-t='${JSON.stringify(t)}'></div>`).join('');
+      style="--sw-bg:${t.bg};--sw-accent:${t.accent}" data-t='${JSON.stringify(t)}'>
+      <div class="swatch-bg"></div>
+      <div class="swatch-accent"></div>
+    </div>`).join('');
   const fontOpts=Object.keys(FONTS).map(k=>`<option value="${k}" ${s.font===k?'selected':''}>${({noto:'Noto Sans KR (기본)',nanumgothic:'나눔고딕',nanummyeongjo:'나눔명조',gowundodum:'고운돋움',gowunbatang:'고운바탕',nanumpen:'나눔손글씨 펜',gamja:'감자꽃'})[k]}</option>`).join('');
   openModal(`<h2>환경설정</h2>
     <label>테마 (프리셋)</label>
@@ -1270,12 +1335,12 @@ function exportBackup(){
 document.getElementById('btnLoad').onclick=()=>document.getElementById('csvFile').click();
 document.getElementById('csvFile').onchange=e=>{
   const f=e.target.files[0]; if(!f) return;
-  const r=new FileReader(); r.onload=()=>{ const n=importCSV(r.result); state.ui.page=1; render(); alert(n+'개의 새 북마크를 불러왔어요. (이미 있던 항목은 건너뜀)'); };
+  const r=new FileReader(); r.onload=()=>{ const n=importCSV(r.result); state.ui.page=1; render(); showToast(n+'개의 새 북마크를 불러왔어요. (이미 있던 항목은 건너뜀)'); };
   r.readAsText(f,'utf-8'); e.target.value='';
 };
 document.getElementById('backupFile').onchange=e=>{
   const f=e.target.files[0]; if(!f) return;
-  const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); state=Object.assign(state,d); save(); render(); closeModal(); alert('백업을 불러왔어요.'); }catch(err){ alert('백업 파일을 읽을 수 없어요.'); } };
+  const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); state=Object.assign(state,d); save(); render(); closeModal(); showToast('백업을 불러왔어요.'); }catch(err){ showToast('백업 파일을 읽을 수 없어요.'); } };
   r.readAsText(f,'utf-8'); e.target.value='';
 };
 document.getElementById('logoFile').onchange=e=>{
