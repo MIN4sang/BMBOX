@@ -13,10 +13,17 @@
     "electron": "^30.0.0",
     "electron-builder": "^24.13.3"
   },
+  "dependencies": {
+    "electron-updater": "^6.3.9"
+  },
   "build": {
     "appId": "com.minasang.bookmark-organizer",
     "productName": "북마크정리기",
-    "files": ["main.js", "index.html"],
+    "files": ["main.js", "preload.js", "index.html"],
+    "publish": {
+      "provider": "github",
+      "releaseType": "release"
+    },
     "win": {
       "target": ["nsis", "portable"]
     },

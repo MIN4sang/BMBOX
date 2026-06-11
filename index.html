@@ -1339,5 +1339,68 @@ document.getElementById('toggleSidebar').onclick=()=>{
 };
 applySidebarCollapsed();
 </script>
+<!-- 업데이트 알림 배너 -->
+<div class="update-bar" id="updateBar">
+  <span id="updateMsg">새 버전이 있어요!</span>
+  <button class="upd-btn" id="updInstallBtn">설치하기</button>
+  <button class="upd-close" id="updCloseBtn" title="닫기">✕</button>
+</div>
+
+<style>
+  .update-bar{
+    display:none; position:fixed; bottom:24px; right:24px; z-index:9999;
+    background:var(--accent); color:var(--accent-text);
+    padding:14px 20px; border-radius:14px; box-shadow:0 4px 20px rgba(0,0,0,.25);
+    font-size:14px; font-weight:700; align-items:center; gap:12px;
+    animation: slideUp .3s ease;
+  }
+  .update-bar.show{display:flex}
+  @keyframes slideUp{ from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  .update-bar .upd-btn{
+    padding:6px 14px; border-radius:999px; border:2px solid var(--accent-text);
+    background:transparent; color:var(--accent-text); font-weight:700;
+    font-size:13px; cursor:pointer; white-space:nowrap;
+  }
+  .update-bar .upd-btn:hover{background:rgba(255,255,255,.2)}
+  .update-bar .upd-close{
+    background:none; border:none; color:var(--accent-text);
+    font-size:18px; cursor:pointer; padding:0 0 0 4px; opacity:.7;
+  }
+  .update-bar .upd-close:hover{opacity:1}
+</style>
+
+<script>
+// Electron 자동 업데이트 UI (브라우저에서 열면 electronAPI가 없으므로 안전하게 조건 처리)
+if (window.electronAPI) {
+  const bar   = document.getElementById('updateBar');
+  const msg   = document.getElementById('updateMsg');
+  const inst  = document.getElementById('updInstallBtn');
+  const close = document.getElementById('updCloseBtn');
+
+  // 새 버전 감지 → 배너 표시
+  window.electronAPI.onUpdateAvailable((version) => {
+    msg.textContent = `새 버전 ${version} 다운로드 중…`;
+    inst.style.display = 'none';
+    bar.classList.add('show');
+  });
+
+  // 다운로드 진행률
+  window.electronAPI.onUpdateProgress((percent) => {
+    msg.textContent = `다운로드 중… ${percent}%`;
+  });
+
+  // 다운로드 완료 → 설치 버튼 활성화
+  window.electronAPI.onUpdateDownloaded(() => {
+    msg.textContent = '새 버전 준비 완료!';
+    inst.style.display = '';
+  });
+
+  // 설치하기
+  inst.onclick = () => window.electronAPI.installUpdate();
+
+  // 닫기
+  close.onclick = () => bar.classList.remove('show');
+}
+</script>
 </body>
 </html>
