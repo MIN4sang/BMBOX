@@ -1,29 +1,74 @@
-# 🔖 북마크 정리기
+# 🔖 북마크 보관함
 
 X(트위터) 북마크를 카테고리·폴더로 정리하는 도구입니다.
 
-## 사용 방법
+---
 
-x-bookmark-extension.zip(확장프로그램)을 설치해서 북마크를 .csv로 추출한다.
-https://drive.google.com/file/d/1MamyLBMk9zFe54uMGu9b2t_QzuwoOuN4/view?usp=sharing
-- 태그 규칙을 원하는 대로 설정한다. (content.js 파일)
-- (예시) const TAG_RULES = [
-      { tag: 'TRPG',       keywords: ['TRPG', 'roll20', '롤20', '코코포리아'] },
-      { tag: 'CoC',       keywords: ['크툴루', '크툴루의 부름', 'CoC', '수호자', '탐사자', '키퍼', '러브크래프트'] },
-      { tag: 'DnD',       keywords: ['던전앤드래곤', '던전 앤 드래곤', 'DnD', 'D&D', '디앤디'] },
-      { tag: '인세인',     keywords: ['인세인', 'insane', '봉마인'] },
+## 시작하는 방법
 
+### 1. 확장프로그램으로 북마크 추출
+`x-bookmark-extension.zip` (확장프로그램)을 설치해서 북마크를 `.csv`로 추출합니다.
+👉 [확장프로그램 다운로드](https://drive.google.com/file/d/1MamyLBMk9zFe54uMGu9b2t_QzuwoOuN4/view?usp=sharing)
 
-### HTML 버전 (인터넷 브라우저)
-`index.html` 파일을 다운로드 후 더블클릭하면 바로 사용할 수 있어요.
+### 2. 태그 규칙 설정
+`content.js` 파일의 `TAG_RULES`를 원하는 대로 수정합니다.
 
-### Windows 앱 (.exe)
-[Releases](../../releases) 페이지에서 최신 `.exe` 파일을 다운로드하세요.
-- `북마크정리기 Setup x.x.x.exe` → 설치형
-- `북마크정리기 x.x.x.exe` → 무설치 포터블
+```javascript
+const TAG_RULES = [
+  { tag: 'TRPG',  keywords: ['TRPG', 'roll20', '롤20', '코코포리아'] },
+  { tag: 'CoC',   keywords: ['크툴루', '크툴루의 부름', 'CoC', '수호자', '탐사자', '키퍼', '러브크래프트'] },
+  { tag: 'DnD',   keywords: ['던전앤드래곤', '던전 앤 드래곤', 'DnD', 'D&D', '디앤디'] },
+  { tag: '인세인', keywords: ['인세인', 'insane', '봉마인'] },
+  // 원하는 태그를 계속 추가하세요
+];
+```
+
+### 3. 북마크 정리기에서 CSV 불러오기
+추출한 `.csv` 파일을 북마크 보관함 앱에서 **[불러오기]** 로 가져옵니다.
+
+---
+
+## 다운로드
+
+[Releases](../../releases) 페이지에서 최신 버전을 받으세요.
+
+| 파일 | 설명 |
+|------|------|
+| `북마크정리기 Setup x.x.x.exe` | Windows 설치형 |
+| `북마크정리기 x.x.x.exe` | Windows 포터블 (설치 불필요) |
+| `북마크정리기-x.x.x.dmg` | macOS (Intel + Apple Silicon) |
+
+또는 `index.html` 파일 하나만 받아 브라우저에서 바로 사용할 수도 있어요.
+
+---
+
+## 설치 시 보안 경고 안내
+
+### Windows
+설치 시 **"Windows가 이 앱을 차단했습니다"** 라는 파란 경고창이 뜰 수 있어요.
+
+> **추가 정보** 클릭 → **실행** 클릭
+
+이후엔 정상적으로 설치돼요.
+
+### macOS
+처음 실행 시 **"개발자를 확인할 수 없어서 열 수 없습니다"** 라는 경고가 뜰 수 있어요.
+
+> `.dmg`를 열어 앱을 응용 프로그램 폴더에 복사한 뒤,  
+> **Finder에서 앱 우클릭 → 열기 → 열기** 클릭
+
+한 번만 이렇게 허용하면 이후엔 정상적으로 실행돼요.
+
+---
+
+## 업데이트
+
+앱 실행 시 새 버전이 있으면 우측 하단에 알림이 떠요.  
+**[설치하기]** 를 누르면 자동으로 다운받고 재시작 후 업데이트됩니다.
 
 ---
 
 ## 참고
-- 데이터는 브라우저/앱에 자동 저장됩니다.
+- 데이터는 앱/브라우저에 자동 저장됩니다.
 - 백업: **환경설정 → 백업 내보내기(.json)**
+- GitHub Pages로 웹 버전 배포 시: Settings → Pages → main / (root) → Save
