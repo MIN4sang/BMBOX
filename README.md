@@ -5,6 +5,7 @@ X(트위터) 북마크를 카테고리·폴더로 정리하는 도구입니다.
 ## 사용 방법
 
 x-bookmark-extension.zip(확장프로그램)을 설치해서 북마크를 .csv로 추출한다.
+https://drive.google.com/file/d/1MamyLBMk9zFe54uMGu9b2t_QzuwoOuN4/view?usp=sharing
 - 태그 규칙을 원하는 대로 설정한다. (content.js 파일)
 - (예시) const TAG_RULES = [
     { tag: 'TRPG',       keywords: ['TRPG', 'roll20', '롤20', '코코포리아'] },
