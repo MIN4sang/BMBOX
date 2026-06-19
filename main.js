@@ -8,6 +8,7 @@ function createWindow() {
   win = new BrowserWindow({
     width: 1280,
     height: 840,
+    icon: path.join(__dirname, 'build', 'icon.png'),
     autoHideMenuBar: true,
     webPreferences: {
       contextIsolation: true,

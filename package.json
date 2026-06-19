@@ -1,8 +1,8 @@
 {
   "name": "bookmark-organizer",
   "version": "1.0.0",
-  "description": "X 북마크 보관함",
-  "author": "미나상",
+  "description": "X bookmark organizer",
+  "author": "minasang",
   "license": "MIT",
   "main": "main.js",
   "scripts": {
@@ -21,20 +21,22 @@
   "build": {
     "appId": "com.minasang.bookmark-organizer",
     "productName": "BMBOX",
-    "files": ["main.js", "preload.js", "index.html"],
+    "files": ["main.js", "preload.js", "index.html", "build/**/*"],
     "publish": {
       "provider": "github",
       "releaseType": "release"
     },
     "win": {
+      "icon": "build/icon.ico",
       "target": ["nsis", "portable"]
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "shortcutName": "북마크 보관함"
+      "shortcutName": "BMBOX"
     },
     "mac": {
+      "icon": "build/icon.icns",
       "target": [
         { "target": "dmg", "arch": ["x64", "arm64"] }
       ],
