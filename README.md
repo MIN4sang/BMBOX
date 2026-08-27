@@ -11,7 +11,7 @@ X(트위터) 북마크를 카테고리·폴더로 정리하는 도구입니다.
 👉 [확장프로그램 다운로드](https://posty.pe/p7zi7fpc)
 
 ### 2. 태그 규칙 설정
-확장 프로그램의 `태그 설정`메뉴나 `content.js` 파일의 `TAG_RULES`를 원하는 대로 수정합니다.
+확장 프로그램의 `태그 설정`메뉴나 `background.js` 파일의 `TAG_RULES`를 원하는 대로 수정합니다.
 
 ```javascript
 const TAG_RULES = [
