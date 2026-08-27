@@ -7,11 +7,11 @@ X(트위터) 북마크를 카테고리·폴더로 정리하는 도구입니다.
 ## 시작하는 방법
 
 ### 1. 확장프로그램으로 북마크 추출
-`x-bookmark-extension.zip` (확장프로그램)을 설치해서 북마크를 `.csv`로 추출합니다.
-👉 [확장프로그램 다운로드](https://drive.google.com/file/d/11boOSTCGBJdRCV2_whW4klM8WpheMtfi/view?usp=sharing)
+`X 북마크 내보내기` (확장프로그램)를 설치해서 북마크를 `.csv`로 추출합니다.
+👉 [확장프로그램 다운로드](https://drive.google.com/file/d/1Jgt__ArLQ0TVzvjmGMSUm2QgOXkqnrYu/view?usp=sharing)
 
 ### 2. 태그 규칙 설정
-`content.js` 파일의 `TAG_RULES`를 원하는 대로 수정합니다.
+확장 프로그램의 `태그 설정`메뉴나 `content.js` 파일의 `TAG_RULES`를 원하는 대로 수정합니다.
 
 ```javascript
 const TAG_RULES = [
@@ -23,8 +23,10 @@ const TAG_RULES = [
 ];
 ```
 
-### 3. 북마크 보관함에서 CSV 불러오기
-추출한 `.csv` 파일을 북마크 보관함 앱에서 **[불러오기]** 로 가져옵니다.
+### 3. 북마크에서 CSV 불러오기
+북마크를 정리하고자 하는 계정에 로그인을 하고, 확장 프로그램을 실행합니다. 옵션을 설정하고 시작을 누르면 북마크를 `.csv`로 변환합니다.
+이때 자동화 정지를 방지하기 위해 한 번에 많은 북마크를 다운받지 말아주세요.
+추출한 `.csv` 파일을 `북마크 보관함`에서 **[불러오기]** 로 가져옵니다.
 
 ---
 
