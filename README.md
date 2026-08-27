@@ -40,7 +40,7 @@ const TAG_RULES = [
 | `북마크정리기 x.x.x.exe` | Windows 포터블 (설치 불필요) |
 | `북마크정리기-x.x.x.dmg` | macOS (Intel + Apple Silicon) |
 
-또는 `index.html` 파일 하나만 받아 브라우저에서 바로 사용할 수도 있어요.
+또는 `[브라우저](https://min4sang.github.io/BMBOX/)`에서 바로 사용할 수도 있어요.
 
 ---
 
