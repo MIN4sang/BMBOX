@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>북마크 보관함</title>
-<link rel="icon" type="image/png" href="build/favicon.png">
+<link rel="icon" 입력="image/png" href="build/favicon.png">
 <link rel="shortcut icon" href="build/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,16 +52,16 @@
   *::-webkit-scrollbar-track-piece{background:transparent}
   *::-webkit-scrollbar-thumb{background:var(--border); border-radius:8px}
   *::-webkit-scrollbar-corner{background:transparent}
-  input[type=range]{
+  input[입력=range]{
     appearance:none; height:8px; border-radius:999px;
     background:linear-gradient(90deg, var(--accent), var(--accent-soft));
     outline:none; cursor:pointer;
   }
-  input[type=range]::-webkit-slider-thumb{
+  input[입력=range]::-webkit-slider-thumb{
     appearance:none; width:18px; height:18px; border-radius:50%;
     background:var(--accent); border:3px solid var(--card); box-shadow:0 2px 8px var(--shadow);
   }
-  input[type=range]::-moz-range-thumb{
+  input[입력=range]::-moz-range-thumb{
     width:18px; height:18px; border-radius:50%;
     background:var(--accent); border:3px solid var(--card); box-shadow:0 2px 8px var(--shadow);
   }
@@ -1322,7 +1322,7 @@ function buildMoveSelectOpts(recs, selectedId, includeUncat){
 }
 function buildRecChipsHtml(recs){
   if(!recs.length) return '';
-  return `<div class="hint" style="margin-bottom:6px">💡 태그가 겹치는 추천 폴더예요</div>
+  return `<div class="hint" style="margin-bottom:6px">💡 추천 폴더</div>
     <div class="rec-chips">${recs.map(r=>`<button type="button" class="pill rec-chip" data-fid="${r.folder.id}">${folderOptionLabel(r.cat,r.folder)}</button>`).join('')}</div>`;
 }
 function wireRecChips(root, selectEl){
