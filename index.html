@@ -297,8 +297,8 @@
   .modal{background:var(--bg); border:1px solid var(--border); border-radius:22px; width:560px; max-width:100%; max-height:88vh; overflow:auto; padding:24px; box-shadow:0 20px 50px rgba(0,0,0,.3)}
   .modal:has(.modal-scroll){overflow:hidden; padding:0}
   .modal-scroll{
-    max-height:calc(88vh - 16px); overflow-y:auto; margin:8px; padding:20px 24px 20px 20px;
-    border-radius:14px; scrollbar-gutter:stable;
+    max-height:calc(88vh - 16px); overflow-y:auto; margin:8px; padding:20px 22px;
+    border-radius:14px;
   }
   .modal-scroll::-webkit-scrollbar-track-piece{margin:22px 0}
   .modal h2{margin:0 0 16px; font-size:20px; color:var(--accent)}
@@ -398,6 +398,22 @@
 .side-btn:hover{
   background:var(--accent-soft);
 }
+.drop-overlay{
+  position:fixed; inset:0; z-index:5000; display:none;
+  align-items:center; justify-content:center;
+  background:color-mix(in srgb, var(--accent) 14%, rgba(0,0,0,.25));
+  pointer-events:none;
+}
+.drop-overlay.show{display:flex}
+.drop-overlay .box{
+  border:3px dashed var(--accent); border-radius:24px;
+  background:var(--card); color:var(--accent); font-weight:800; font-size:18px;
+  padding:40px 60px; box-shadow:0 12px 32px var(--shadow); text-align:center;
+}
+.rec-chips{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px}
+.rec-chip{border:none; cursor:pointer; opacity:.82; transition:.12s}
+.rec-chip:hover{opacity:1; transform:translateY(-1px)}
+.rec-chip.sel{box-shadow:0 0 0 2px var(--text); opacity:1}
 </style>
 </head>
 <body>
@@ -468,6 +484,8 @@
 <div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
 <!-- 토스트 알림 -->
 <div class="toast" id="toast"></div>
+<!-- 드래그앤드롭 안내 오버레이 -->
+<div class="drop-overlay" id="dropOverlay"><div class="box">📄 CSV 파일을 여기에 놓아 불러오기</div></div>
 
 <script>
 /* ============================================================
@@ -478,7 +496,7 @@ const DEFAULT_LOGO = 'build/title-logo.png';
 let state = {
   categories: [],          // {id, emoji, name, collapsed, folders:[{id,name}]}
   bookmarks: [],           // {id, tags[], author, handle, content, imageUrl, hasVideo, date, postUrl, links[], folderId}
-  settings: { accent:'#ff5c8a', bg:'#fffafc', text:'#3a2f33', font:'noto', logo:null, logoSize:120, columns:'auto' },
+  settings: { accent:'#ff5c8a', bg:'#fffafc', text:'#3a2f33', font:'noto', logo:null, logoSize:120, columns:'auto', tagRecommend:true },
   ui: { view:{type:'all'}, sidebarWidth:230, sort:'new', page:1, perPage:50 },
 };
 
@@ -507,7 +525,7 @@ function load(){
   try{
     const raw = localStorage.getItem(STORE_KEY);
     if(raw){ const d = JSON.parse(raw); state = Object.assign(state, d);
-      state.settings = Object.assign({accent:'#ff5c8a',bg:'#fffafc',text:'#3a2f33',font:'noto',logo:null, logoSize:120, columns:'auto'}, d.settings||{});
+      state.settings = Object.assign({accent:'#ff5c8a',bg:'#fffafc',text:'#3a2f33',font:'noto',logo:null, logoSize:120, columns:'auto', tagRecommend:true}, d.settings||{});
       state.ui = Object.assign({view:{type:'all'}, sidebarWidth:230, sort:'new', page:1, perPage:50}, d.ui||{});
       if(!state.ui.sidebarWidth || state.ui.sidebarWidth>=360) state.ui.sidebarWidth=230;
       state.ui.sidebarWidth=Math.min(520,Math.max(175,state.ui.sidebarWidth)); }
@@ -1038,12 +1056,17 @@ function doSelDelete(){
 // 선택 이동
 document.getElementById('btnSelMove').onclick=()=>{
   if(!selIds.size) return;
-  let opts=''; state.categories.forEach(c=>{ c.folders.forEach(f=>{ opts+=`<option value="${f.id}">${esc(c.emoji||'')} ${esc(c.name)} / ${esc(f.name)}</option>`; }); });
+  const selBookmarks=state.bookmarks.filter(b=>selIds.has(b.id));
+  const tagPool=[...new Set(selBookmarks.flatMap(b=>b.tags||[]))];
+  const recs=recommendFolders(tagPool);
+  const opts=buildMoveSelectOpts(recs, null, false);
   if(!opts){ showToast('이동할 폴더가 없어요. 먼저 카테고리와 폴더를 만들어 주세요.'); return; }
+  const chips=buildRecChipsHtml(recs);
   const ov=document.createElement('div'); ov.className='modal-overlay';
   ov.innerHTML=`<div class="modal" style="max-width:380px">
     <h2 style="margin:0 0 12px">선택 이동</h2>
     <p style="margin:0 0 10px;color:var(--muted)"><b style="color:var(--accent)">${selIds.size}개</b>의 북마크를 이동할 폴더를 선택해 주세요.</p>
+    ${chips}
     <select id="selMoveFolder" style="width:100%;margin-bottom:18px;padding:9px 12px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-family:inherit;font-size:14px">${opts}</select>
     <div style="display:flex;gap:10px;justify-content:flex-end">
       <button class="btn" id="selMoveCancelBtn">취소</button>
@@ -1051,9 +1074,11 @@ document.getElementById('btnSelMove').onclick=()=>{
     </div>
   </div>`;
   document.body.appendChild(ov);
+  const selEl=ov.querySelector('#selMoveFolder');
+  wireRecChips(ov, selEl);
   ov.querySelector('#selMoveCancelBtn').onclick=()=>ov.remove();
   ov.querySelector('#selMoveOkBtn').onclick=()=>{
-    const fid=ov.querySelector('#selMoveFolder').value;
+    const fid=selEl.value;
     state.bookmarks.forEach(b=>{ if(selIds.has(b.id)) b.folderId=fid; });
     save(); ov.remove(); exitSelMode(); renderSidebar(); renderMain();
   };
@@ -1210,17 +1235,31 @@ function delCategory(cat){
   };
 }
 function editFolder(cat,f){
-  openModal(`<h2>폴더 이름 수정</h2>
+  const showTags = !!state.settings.tagRecommend;
+  openModal(`<h2>폴더 수정</h2>
+    <label>폴더 이름</label>
     <div class="row"><input type="text" id="editFolderName" value="${esc(f.name)}"></div>
+    ${showTags ? `
+    <label style="margin-top:14px">속성 태그 (스페이스바 또는 / 로 구분)</label>
+    <div class="tag-ac-wrap">
+      <input type="text" id="editFolderTags" value="${esc((f.tags||[]).join(' / '))}" autocomplete="off">
+      <div class="tag-ac-drop" id="folderTagAcDrop"></div>
+    </div>
+    <div class="hint">여기 등록한 태그와 겹치는 북마크를 이동할 때 이 폴더를 추천해줘요.</div>
+    ` : ''}
     <div class="modal-actions">
       <button class="btn ghost" onclick="closeModal()">취소</button>
       <button class="btn primary" id="okEditFolder">저장</button>
     </div>`);
   const inp=document.getElementById('editFolderName');
+  const tagsInp=showTags ? document.getElementById('editFolderTags') : null;
+  if(tagsInp) initTagAutocomplete(tagsInp, document.getElementById('folderTagAcDrop'));
   inp.focus(); inp.select();
   document.getElementById('okEditFolder').onclick=()=>{
     const name=inp.value.trim(); if(!name) return;
-    f.name=name; save(); render(); closeModal();
+    f.name=name;
+    if(tagsInp) f.tags=tagsInp.value.split('/').map(s=>s.trim()).filter(Boolean);
+    save(); render(); closeModal();
   };
   inp.addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('okEditFolder').click(); });
 }
@@ -1245,6 +1284,55 @@ function delFolder(cat,f){
 function moveBookmark(bmId, folderId){
   const bm=state.bookmarks.find(b=>b.id===bmId); if(!bm) return;
   bm.folderId=folderId; save(); render();
+}
+
+/* ============================================================
+   태그 기반 폴더 추천
+   ============================================================ */
+function folderOptionLabel(cat, folder){ return `${esc(cat.emoji||'')} ${esc(cat.name)} / ${esc(folder.name)}`.replace(/^ /,''); }
+function recommendFolders(tagsList, limit=3){
+  if(!state.settings.tagRecommend) return [];
+  const bSet=new Set((tagsList||[]).map(t=>String(t).toLowerCase().trim()).filter(Boolean));
+  if(!bSet.size) return [];
+  const scored=[];
+  state.categories.forEach(cat=>{
+    cat.folders.forEach(folder=>{
+      const fTags=folder.tags||[];
+      let score=0;
+      fTags.forEach(t=>{ if(bSet.has(String(t).toLowerCase().trim())) score++; });
+      if(score>0) scored.push({cat, folder, score});
+    });
+  });
+  scored.sort((a,b)=>b.score-a.score);
+  return scored.slice(0,limit);
+}
+function buildMoveSelectOpts(recs, selectedId, includeUncat){
+  let opts = includeUncat ? `<option value="">— 미분류 —</option>` : '';
+  const recIds=new Set(recs.map(r=>r.folder.id));
+  if(recs.length){
+    opts += `<optgroup label="💡 추천 폴더">${recs.map(r=>`<option value="${r.folder.id}" ${selectedId===r.folder.id?'selected':''}>${folderOptionLabel(r.cat,r.folder)}</option>`).join('')}</optgroup>`;
+  }
+  let rest='';
+  state.categories.forEach(c=>{ c.folders.forEach(f=>{
+    if(recIds.has(f.id)) return;
+    rest += `<option value="${f.id}" ${selectedId===f.id?'selected':''}>${folderOptionLabel(c,f)}</option>`;
+  }); });
+  opts += recs.length ? (rest?`<optgroup label="전체 폴더">${rest}</optgroup>`:'') : rest;
+  return opts;
+}
+function buildRecChipsHtml(recs){
+  if(!recs.length) return '';
+  return `<div class="hint" style="margin-bottom:6px">💡 태그가 겹치는 추천 폴더예요</div>
+    <div class="rec-chips">${recs.map(r=>`<button type="button" class="pill rec-chip" data-fid="${r.folder.id}">${folderOptionLabel(r.cat,r.folder)}</button>`).join('')}</div>`;
+}
+function wireRecChips(root, selectEl){
+  root.querySelectorAll('.rec-chip').forEach(chip=>{
+    if(chip.dataset.fid===selectEl.value) chip.classList.add('sel');
+    chip.onclick=()=>{
+      selectEl.value=chip.dataset.fid;
+      root.querySelectorAll('.rec-chip').forEach(c=>c.classList.toggle('sel', c===chip));
+    };
+  });
 }
 function reorderCustom(draggedId, targetId){
   if(!draggedId || draggedId===targetId) return;
@@ -1300,25 +1388,30 @@ function openDuplicateCheck(){
 }
 function openMovePicker(bm, anchor){
   const folders=allFolders();
-  let opts = `<option value="">— 미분류 —</option>`;
-  state.categories.forEach(c=>{
-    opts+=`<optgroup label="${esc((c.emoji?c.emoji+' ':'')+c.name)}">`;
-    if(c.folders.length){
-      c.folders.forEach(f=>opts+=`<option value="${f.id}" ${bm.folderId===f.id?'selected':''}>${esc(f.name)}</option>`);
-    } else {
-      opts+=`<option disabled style="color:var(--muted)">(폴더 없음)</option>`;
-    }
-    opts+=`</optgroup>`;
-  });
-  openModal(`<h2>폴더로 이동</h2>
-    <label>이 북마크를 넣을 폴더</label>
-    <select id="moveSel" size="8" style="width:100%;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-family:inherit;font-size:14px;padding:4px">${opts}</select>
-    ${folders.length?'':'<div class="hint">아직 폴더가 없어요. 좌측 [카테고리 생성]으로 먼저 폴더를 만들어 주세요.</div>'}
-    <div class="modal-actions">
-      <button class="btn ghost" onclick="closeModal()">닫기</button>
-      <button class="btn primary" id="okMove">이동</button>
-    </div>`);
-  document.getElementById('okMove').onclick=()=>{ moveBookmark(bm.id, document.getElementById('moveSel').value||null); closeModal(); };
+  const recs=recommendFolders(bm.tags||[]);
+  const opts=buildMoveSelectOpts(recs, bm.folderId, true);
+  const chips=buildRecChipsHtml(recs);
+  const ov=document.createElement('div'); ov.className='modal-overlay';
+  ov.innerHTML=`<div class="modal" style="max-width:380px">
+    <h2 style="margin:0 0 12px">폴더로 이동</h2>
+    <p style="margin:0 0 10px;color:var(--muted)">이 북마크를 이동할 폴더를 선택해 주세요.</p>
+    ${chips}
+    <select id="moveSel" style="width:100%;margin-bottom:18px;padding:9px 12px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-family:inherit;font-size:14px">${opts}</select>
+    ${folders.length?'':'<div class="hint" style="margin:-10px 0 14px">아직 폴더가 없어요. 좌측 [카테고리 생성]으로 먼저 폴더를 만들어 주세요.</div>'}
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn" id="moveCancelBtn">취소</button>
+      <button class="btn primary" id="moveOkBtn">이동</button>
+    </div>
+  </div>`;
+  document.body.appendChild(ov);
+  const selEl=ov.querySelector('#moveSel');
+  wireRecChips(ov, selEl);
+  ov.querySelector('#moveCancelBtn').onclick=()=>ov.remove();
+  ov.querySelector('#moveOkBtn').onclick=()=>{
+    moveBookmark(bm.id, selEl.value||null);
+    ov.remove();
+  };
+  ov.addEventListener('click',e=>{ if(e.target===ov) ov.remove(); });
 }
 function delBookmark(bm){
   openModal(`<h2>북마크 삭제</h2>
@@ -1397,6 +1490,18 @@ function initTagAutocomplete(input, drop){
   });
 
   input.addEventListener('keydown',ev=>{
+    if(ev.key===' '){
+      ev.preventDefault();
+      const dropItems=drop.querySelectorAll('.tag-ac-item');
+      if(drop.classList.contains('show') && dropItems.length && activeIdx>=0){
+        replaceCurrentWord(dropItems[activeIdx].textContent);
+      } else {
+        const word=getCurrentWord();
+        if(word) replaceCurrentWord(word);
+      }
+      hideDrop();
+      return;
+    }
     const items=drop.querySelectorAll('.tag-ac-item');
     if(!drop.classList.contains('show')||!items.length) return;
     if(ev.key==='ArrowDown'){
@@ -1423,7 +1528,7 @@ function initTagAutocomplete(input, drop){
 function editBookmark(bm){
   const linkInputs=(bm.links||[]).map((u,i)=>`<div class="linkrow"><input type="text" class="exlink" value="${esc(u)}"><button class="btn" onclick="this.parentElement.remove()">－</button></div>`).join('');
   openModal(`<h2>북마크 수정</h2>
-    <label>태그 (/ 로 구분)</label>
+    <label>태그 (스페이스바 또는 / 로 구분)</label>
     <div class="tag-ac-wrap">
       <input type="text" id="eTags" value="${esc((bm.tags||[]).join(' / '))}" autocomplete="off">
       <div class="tag-ac-drop" id="tagAcDrop"></div>
@@ -1477,7 +1582,7 @@ function openFull(bm){
   const links=cardLinks(bm).map(u=>`<a href="${esc(u)}" target="_blank" rel="noopener">🔗 ${esc(shortUrl(u))}</a>`).join('<br>');
   const tags=(bm.tags||[]).map(t=>`<span class="pill">${esc(t)}</span>`).join('');
   openModal(`<h2 style="display:flex;justify-content:space-between;align-items:center">전체 보기
-      <button class="btn ghost" onclick="closeModal()">✕</button></h2>
+      <button class="btn ghost" id="fDel" style="color:var(--danger)">🗑 삭제</button></h2>
     ${bm.imageUrl
         ? `<img class="full-img" referrerpolicy="no-referrer" src="${esc(bm.imageUrl)}" alt="">`
         : `<img class="full-img full-img-logo" src="${esc(state.settings.logo||DEFAULT_LOGO)}" alt="">`}
@@ -1487,8 +1592,6 @@ function openFull(bm){
     ${links?`<div class="card-links">${links}</div>`:''}
     <div class="modal-actions">
       <button class="btn" id="fEdit">수정</button>
-      <button class="btn" id="fDel" style="color:var(--danger)">삭제</button>
-      <button class="btn primary" onclick="closeModal()">닫기</button>
     </div>`);
   document.getElementById('fEdit').onclick=()=>editBookmark(bm);
   document.getElementById('fDel').onclick=()=>{ closeModal(); delBookmark(bm); };
@@ -1554,6 +1657,11 @@ function openSettings(){
   <span class="hint">px</span>
 </div>
     <hr style="border:none;border-top:1px solid var(--border-soft);margin:20px 0">
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0">
+      <input type="checkbox" id="setTagRecommend" ${s.tagRecommend?'checked':''}> 태그 기반 폴더 추천 사용
+    </label>
+    <div class="hint">폴더 수정에서 등록한 속성 태그와 북마크 태그가 겹치면, 이동할 때 폴더를 추천해줘요.</div>
+    <hr style="border:none;border-top:1px solid var(--border-soft);margin:20px 0">
     <label>데이터 백업</label>
     <div class="row">
       <button class="btn" id="expBackup">백업 내보내기(.json)</button>
@@ -1571,6 +1679,7 @@ function openSettings(){
   });
   document.getElementById('setAccent').oninput=e=>{ state.settings.accent=e.target.value; save(); applyTheme(); };
   document.getElementById('setFont').onchange=e=>{ state.settings.font=e.target.value; save(); applyTheme(); };
+  document.getElementById('setTagRecommend').onchange=e=>{ state.settings.tagRecommend=e.target.checked; save(); };
   (function(){
     const box=document.getElementById('setCols'); const cur=state.settings.columns||'auto';
     [['auto','자동'],['2','2열'],['3','3열'],['4','4열'],['5','5열'],['6','6열']].forEach(([v,label])=>{
@@ -1627,9 +1736,9 @@ function exportBackup(){
 /* ============================================================
    파일 입력 핸들러
    ============================================================ */
-document.getElementById('btnLoad').onclick=()=>document.getElementById('csvFile').click();
-document.getElementById('csvFile').onchange=e=>{
-  const files=[...e.target.files]; if(!files.length) return;
+function importCSVFiles(fileList){
+  const files=[...fileList].filter(f=>/\.csv$/i.test(f.name));
+  if(!files.length){ showToast('CSV 파일만 불러올 수 있어요.'); return; }
   let total=0, done=0;
   files.forEach(f=>{
     const r=new FileReader();
@@ -1643,8 +1752,42 @@ document.getElementById('csvFile').onchange=e=>{
     };
     r.readAsText(f,'utf-8');
   });
+}
+document.getElementById('btnLoad').onclick=()=>document.getElementById('csvFile').click();
+document.getElementById('csvFile').onchange=e=>{
+  const files=[...e.target.files]; if(!files.length) return;
+  importCSVFiles(files);
   e.target.value='';
 };
+
+/* ---------- 드래그앤드롭으로 CSV 파일 업로드 ---------- */
+(function(){
+  const dropOverlay=document.getElementById('dropOverlay');
+  let dragDepth=0;
+  const isFileDrag=e=> e.dataTransfer && e.dataTransfer.types && [...e.dataTransfer.types].includes('Files');
+  window.addEventListener('dragenter',e=>{
+    if(!isFileDrag(e)) return;
+    e.preventDefault();
+    dragDepth++;
+    dropOverlay.classList.add('show');
+  });
+  window.addEventListener('dragover',e=>{
+    if(!isFileDrag(e)) return;
+    e.preventDefault();
+  });
+  window.addEventListener('dragleave',e=>{
+    if(!isFileDrag(e)) return;
+    dragDepth=Math.max(0,dragDepth-1);
+    if(dragDepth===0) dropOverlay.classList.remove('show');
+  });
+  window.addEventListener('drop',e=>{
+    if(!isFileDrag(e)) return;
+    e.preventDefault();
+    dragDepth=0;
+    dropOverlay.classList.remove('show');
+    if(e.dataTransfer.files && e.dataTransfer.files.length) importCSVFiles(e.dataTransfer.files);
+  });
+})();
 document.getElementById('backupFile').onchange=e=>{
   const f=e.target.files[0]; if(!f) return;
   const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); state=Object.assign(state,d); save(); render(); closeModal(); showToast('백업을 불러왔어요.'); }catch(err){ showToast('백업 파일을 읽을 수 없어요.'); } };
