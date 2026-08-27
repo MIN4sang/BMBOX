@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>북마크 보관함</title>
-<link rel="icon" 입력="image/png" href="build/favicon.png">
+<link rel="icon" type="image/png" href="build/favicon.png">
 <link rel="shortcut icon" href="build/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,16 +52,16 @@
   *::-webkit-scrollbar-track-piece{background:transparent}
   *::-webkit-scrollbar-thumb{background:var(--border); border-radius:8px}
   *::-webkit-scrollbar-corner{background:transparent}
-  input[입력=range]{
+  input[type=range]{
     appearance:none; height:8px; border-radius:999px;
     background:linear-gradient(90deg, var(--accent), var(--accent-soft));
     outline:none; cursor:pointer;
   }
-  input[입력=range]::-webkit-slider-thumb{
+  input[type=range]::-webkit-slider-thumb{
     appearance:none; width:18px; height:18px; border-radius:50%;
     background:var(--accent); border:3px solid var(--card); box-shadow:0 2px 8px var(--shadow);
   }
-  input[입력=range]::-moz-range-thumb{
+  input[type=range]::-moz-range-thumb{
     width:18px; height:18px; border-radius:50%;
     background:var(--accent); border:3px solid var(--card); box-shadow:0 2px 8px var(--shadow);
   }
@@ -431,7 +431,7 @@
     <div class="sidebar-foot">
       <button class="foot-btn" id="btnSettings">⚙ 환경설정</button>
       <div class="credit"><a href="https://x.com/5golgyeo" target="_blank" rel="noopener">오골계</a></div>
-      <div class="credit" style="opacity:.6;margin-top:2px">보관함 v.1</div>
+      <div class="credit" style="opacity:.6;margin-top:2px">보관함 v.2</div>
     </div>
   </aside>
 
@@ -520,15 +520,38 @@ const THEMES = [
   {name:'블랙앤화이트', accent:'#f0f0f0', bg:'#1b1b1b', text:'#eeeeee'},
 ];
 
-function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
-function load(){
+function save(){
   try{
-    const raw = localStorage.getItem(STORE_KEY);
-    if(raw){ const d = JSON.parse(raw); state = Object.assign(state, d);
-      state.settings = Object.assign({accent:'#ff5c8a',bg:'#fffafc',text:'#3a2f33',font:'noto',logo:null, logoSize:120, columns:'auto', tagRecommend:true}, d.settings||{});
-      state.ui = Object.assign({view:{type:'all'}, sidebarWidth:230, sort:'new', page:1, perPage:50}, d.ui||{});
-      if(!state.ui.sidebarWidth || state.ui.sidebarWidth>=360) state.ui.sidebarWidth=230;
-      state.ui.sidebarWidth=Math.min(520,Math.max(175,state.ui.sidebarWidth)); }
+    const json = JSON.stringify(state);
+    localStorage.setItem(STORE_KEY, json); // 브라우저 캐시(이중 안전장치)
+    if(window.electronAPI && window.electronAPI.saveData) window.electronAPI.saveData(json); // 데스크톱 앱: 실제 파일에 저장
+  }catch(e){}
+}
+function applyLoadedData(raw){
+  if(!raw) return;
+  try{
+    const d = JSON.parse(raw); state = Object.assign(state, d);
+    state.settings = Object.assign({accent:'#ff5c8a',bg:'#fffafc',text:'#3a2f33',font:'noto',logo:null, logoSize:120, columns:'auto', tagRecommend:true}, d.settings||{});
+    state.ui = Object.assign({view:{type:'all'}, sidebarWidth:230, sort:'new', page:1, perPage:50}, d.ui||{});
+    if(!state.ui.sidebarWidth || state.ui.sidebarWidth>=360) state.ui.sidebarWidth=230;
+    state.ui.sidebarWidth=Math.min(520,Math.max(175,state.ui.sidebarWidth));
+  }catch(e){}
+}
+async function load(){
+  try{
+    if(window.electronAPI && window.electronAPI.loadData){
+      let raw = await window.electronAPI.loadData(); // 데스크톱 앱: 실제 파일에서 우선 로드 (localStorage보다 안전)
+      if(!raw){
+        // 파일에 아직 데이터가 없으면(첫 실행 직후거나, 구버전에서 막 업데이트한 경우) localStorage에서 마이그레이션
+        raw = localStorage.getItem(STORE_KEY);
+        applyLoadedData(raw);
+        if(raw) save(); // 마이그레이션한 데이터를 새 파일 저장소에도 즉시 반영
+        return;
+      }
+      applyLoadedData(raw);
+    } else {
+      applyLoadedData(localStorage.getItem(STORE_KEY)); // 브라우저에서 index.html만 단독으로 열었을 때
+    }
   }catch(e){}
 }
 
@@ -1322,7 +1345,7 @@ function buildMoveSelectOpts(recs, selectedId, includeUncat){
 }
 function buildRecChipsHtml(recs){
   if(!recs.length) return '';
-  return `<div class="hint" style="margin-bottom:6px">💡 추천 폴더</div>
+  return `<div class="hint" style="margin-bottom:6px">💡 태그가 겹치는 추천 폴더예요</div>
     <div class="rec-chips">${recs.map(r=>`<button type="button" class="pill rec-chip" data-fid="${r.folder.id}">${folderOptionLabel(r.cat,r.folder)}</button>`).join('')}</div>`;
 }
 function wireRecChips(root, selectEl){
@@ -1872,7 +1895,7 @@ function syncSortDropUI(val){
 })();
 
 /* ---------- 시작 ---------- */
-load(); render();
+load().then(()=>{ render(); if(typeof applySidebarCollapsed==='function') applySidebarCollapsed(); });
 
 /* ---------- 사이드바 접기/펼치기 ---------- */
 function applySidebarCollapsed(){
