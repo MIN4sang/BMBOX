@@ -73,4 +73,3 @@ const TAG_RULES = [
 ## 참고
 - 데이터는 앱/브라우저에 자동 저장됩니다.
 - 백업: **환경설정 → 백업 내보내기(.json)**
-- GitHub Pages로 웹 버전 배포 시: Settings → Pages → main / (root) → Save
