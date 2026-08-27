@@ -1,8 +1,31 @@
 const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
+const fs = require('fs');
 
 let win;
+
+// ── 사용자 데이터 파일 저장 (localStorage 대신 실제 파일에 저장해서 유실 방지) ──
+function getDataFilePath() {
+  return path.join(app.getPath('userData'), 'bookmark-data.json');
+}
+
+ipcMain.handle('data:load', () => {
+  try {
+    const p = getDataFilePath();
+    if (fs.existsSync(p)) return fs.readFileSync(p, 'utf-8');
+  } catch (e) {}
+  return null;
+});
+
+ipcMain.on('data:save', (event, json) => {
+  try {
+    const p = getDataFilePath();
+    const tmp = p + '.tmp';
+    fs.writeFileSync(tmp, json, 'utf-8');
+    fs.renameSync(tmp, p); // 원자적 교체: 저장 도중 앱이 죽어도 기존 파일이 깨지지 않음
+  } catch (e) {}
+});
 
 function createWindow() {
   win = new BrowserWindow({
