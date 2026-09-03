@@ -4,6 +4,10 @@
   "description": "X bookmark organizer",
   "author": "minasang",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MIN4sang/BMBOX.git"
+  },
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -24,6 +28,8 @@
     "files": ["main.js", "preload.js", "index.html", "build/**/*"],
     "publish": {
       "provider": "github",
+      "owner": "MIN4sang",
+      "repo": "BMBOX",
       "releaseType": "release"
     },
     "win": {
@@ -33,7 +39,8 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "shortcutName": "BMBOX"
+      "shortcutName": "BMBOX",
+      "license": "build/installer-notice.txt"
     },
     "mac": {
       "icon": "build/icon.icns",
