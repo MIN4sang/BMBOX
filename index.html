@@ -10,6 +10,72 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Gowun+Batang&family=Gowun+Dodum&family=Nanum+Gothic&family=Nanum+Myeongjo&family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 <style>
+  @font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Thin.woff2') format('woff2');
+    font-weight: 100;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-ExtraLight.woff2') format('woff2');
+    font-weight: 200;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Light.woff2') format('woff2');
+    font-weight: 300;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-SemiBold.woff2') format('woff2');
+    font-weight: 600;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-ExtraBold.woff2') format('woff2');
+    font-weight: 800;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Black.woff2') format('woff2');
+    font-weight: 900;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'RoundedFixedsys';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+    font-weight: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'OngleipKonkon';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2412-1@1.0/Ownglyph_corncorn-Rg.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+  }
   :root{
     --accent:#ff5c8a;
     --bg:#fffafc;
@@ -54,7 +120,7 @@
   *::-webkit-scrollbar-corner{background:transparent}
   input[type=range]{
     appearance:none; height:8px; border-radius:999px;
-    background:linear-gradient(90deg, var(--accent), var(--accent-soft));
+    background:linear-gradient(90deg, var(--accent), var(--accent2));
     outline:none; cursor:pointer;
   }
   input[type=range]::-webkit-slider-thumb{
@@ -86,22 +152,25 @@
     letter-spacing:.5px; padding:0; margin:30px 0 20px; user-select:none;
   }
   .logo img{display:block; margin:0 auto; width:auto; height:auto; max-width:min(500px,100%); max-height:500px; object-fit:contain}
-  .top-actions{display:flex; gap:8px; margin-bottom:20px}
+  .top-actions{display:flex; gap:4px; margin-bottom:20px; align-items:flex-start}
   .top-actions button{
-    flex:1; padding:8px 4px; border:1px solid var(--border); border-radius:10px;
-    background:transparent; color:var(--accent); font-weight:700; font-size:13px;
-    transition:.15s;
+    flex:1; min-width:0; padding:8px 0; border:1px solid var(--top-btn-border); border-radius:10px;
+    background:var(--top-btn-bg); color:var(--top-btn-text); font-weight:700; font-size:11px;
+    line-height:1.25; transition:background-color .15s; word-break:keep-all; overflow-wrap:break-word;
+    display:flex; align-items:center; justify-content:center; text-align:center;
   }
-  .top-actions button:hover{background:var(--accent-soft)}
+  .top-actions button:hover{background:var(--top-btn-hover-bg)}
+  .top-actions button.square{flex:none; padding:2px}
+  .top-actions button[hidden]{display:none}
   .nav-item{
     padding:9px 12px; border-radius:10px; font-weight:600; font-size:14px;
     color:var(--text); display:flex; justify-content:space-between; align-items:center;
     transition:.12s; user-select:none;
   }
   .nav-item:hover{background:var(--surface-2)}
-  .nav-item.active{background:var(--accent); color:var(--accent-text)}
+  .nav-item.active{background:var(--nav-accent); color:var(--nav-accent-text)}
   .nav-item .count{font-size:12px; opacity:.7}
-  .nav-item.drop-hot{outline:2px dashed var(--accent); outline-offset:-2px}
+  .nav-item.drop-hot{outline:2px dashed var(--nav-accent); outline-offset:-2px}
 
   .cat-list{flex:1; overflow-y:auto; margin-top:8px; padding-right:2px}
 
@@ -125,9 +194,9 @@
   .cat-head:hover .cat-handle{opacity:.5}
   .cat-handle:active{cursor:grabbing}
   .cat.cat-dragging{opacity:.4}
-  .cat.cat-drop-above{border-top:2px solid var(--accent)}
-  .cat.cat-drop-below{border-bottom:2px solid var(--accent)}
-  .cat-head.folder-drop-target{outline:2px dashed var(--accent); outline-offset:-2px; background:var(--accent-soft)}
+  .cat.cat-drop-above{border-top:2px solid var(--nav-accent)}
+  .cat.cat-drop-below{border-bottom:2px solid var(--nav-accent)}
+  .cat-head.folder-drop-target{outline:2px dashed var(--nav-accent); outline-offset:-2px; background:var(--accent-soft)}
   .folders{padding-left:10px; overflow:hidden}
   .cat.collapsed .folders{display:none}
   .folder{
@@ -136,13 +205,13 @@
     cursor:pointer;
   }
   .folder:hover{background:var(--surface-2)}
-  .folder.active{background:var(--accent); color:var(--accent-text)}
-  .folder.active .count{color:var(--accent-text)}
+  .folder.active{background:var(--nav-accent); color:var(--nav-accent-text)}
+  .folder.active .count{color:var(--nav-accent-text)}
   .folder .fname{flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .folder .count{font-size:12px; color:var(--muted)}
   .folder .mini{opacity:0; font-size:14px; padding:0 3px}
   .folder:hover .mini{opacity:.7}
-  .folder.drop-hot{outline:2px dashed var(--accent); outline-offset:-2px}
+  .folder.drop-hot{outline:2px dashed var(--nav-accent); outline-offset:-2px}
   .folder-handle{
     cursor:grab; opacity:0; font-size:14px; color:var(--muted);
     padding:0 2px; line-height:1; flex-shrink:0; transition:opacity .12s;
@@ -151,8 +220,8 @@
   .folder:hover .folder-handle{opacity:.5}
   .folder-handle:active{cursor:grabbing}
   .folder.folder-dragging{opacity:.4}
-  .folder.folder-drop-above{border-top:2px solid var(--accent)}
-  .folder.folder-drop-below{border-bottom:2px solid var(--accent)}
+  .folder.folder-drop-above{border-top:2px solid var(--nav-accent)}
+  .folder.folder-drop-below{border-bottom:2px solid var(--nav-accent)}
 
   .sidebar-foot{padding-top:10px; border-top:1px solid var(--border-soft); margin-top:8px}
   .foot-btn{
@@ -161,6 +230,17 @@
   }
   .foot-btn:hover{background:var(--surface-2); color:var(--accent)}
   .credit{text-align:center; font-size:12px; color:var(--muted); margin-top:6px}
+  .version-tag{position:relative; cursor:default; width:fit-content; margin-left:auto; margin-right:auto}
+  .version-tooltip{
+    display:none; position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%);
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    box-shadow:0 8px 24px var(--shadow); padding:12px 14px; width:230px;
+    font-size:12px; line-height:1.6; color:var(--text); text-align:left; z-index:9999;
+  }
+  .version-tag:hover .version-tooltip{display:block}
+  .version-tooltip b{display:block; margin-bottom:6px; color:var(--accent); font-size:12.5px}
+  .version-tooltip ul{margin:0; padding-left:16px}
+  .version-tooltip li{margin-bottom:3px}
 
   /* ---------- 리사이저 ---------- */
   .resizer{width:6px; flex:none; cursor:col-resize; background:transparent; position:relative}
@@ -196,6 +276,15 @@
   .dropdown-wrap.open .dropdown-arrow{transform:rotate(180deg)}
   .dropdown-menu{min-width:140px; width:max-content; left:0; right:auto}
   .dropdown-menu .tag-ac-item.sel{color:var(--accent); font-weight:700}
+  /* 네이티브 <select>를 이 디자인으로 덮어씌우는 커스텀 드롭다운 (skinSelect 참고) */
+  .custom-select-wrap{border-radius:999px}
+  .custom-select-btn{width:100%; justify-content:space-between; border-radius:10px; padding:9px 12px; font-weight:600}
+  .custom-select-btn .dropdown-arrow{flex:none}
+  .custom-select-label{flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left}
+  .custom-select-menu{width:100%; min-width:0; border-radius:10px}
+  /* 메뉴를 body 바로 아래로 옮겨서(포털) 모달의 overflow에 잘리지 않게 함 — 위치는 JS(skinSelect)가 버튼 기준으로 계산해서 넣어줌 */
+  .custom-select-menu-portal{position:fixed; left:auto; right:auto; top:auto}
+  .select-group-label{padding:9px 14px 4px; font-size:11px; font-weight:800; color:var(--muted); letter-spacing:.3px}
   .dup-group{border:1px solid var(--border-soft); border-radius:12px; padding:12px 14px; margin-bottom:10px; background:var(--surface)}
   .dup-group .dup-title{font-weight:700; font-size:13.5px; margin-bottom:4px; word-break:break-word}
   .dup-group .dup-meta{font-size:12px; color:var(--muted)}
@@ -234,7 +323,7 @@
   .card-img{position:relative; width:100%; height:100%; object-fit:cover; display:block}
   .card-img-logo{object-fit:contain; padding:16px; background:var(--surface-2)}
   .pill{
-    background:var(--accent); color:var(--accent-text); font-size:11px; font-weight:700; line-height:1.4;
+    background:var(--tag-color); color:var(--tag-text); font-size:11px; font-weight:700; line-height:1.4;
     padding:5px 10px; border-radius:999px; display:inline-flex; align-items:center;
   }
   .vid-badge{position:absolute; right:10px; top:10px; background:rgba(0,0,0,.6); color:#fff; font-size:11px; padding:3px 8px; border-radius:999px; z-index:2}
@@ -423,7 +512,8 @@
     <div class="logo" id="logo">로고</div>
     <div class="top-actions">
       <button id="btnLoad">불러오기</button>
-      <button id="btnCreate">카테고리 생성</button>
+      <button id="btnCreate" data-short="카테고리">카테고리 생성</button>
+      <button id="btnAddBookmark" data-short="북마크">북마크 추가</button>
     </div>
     <div class="nav-item" id="navAll" data-view="all">전체보기 <span class="count" id="cntAll">0</span></div>
     <div class="nav-item" id="navUncat" data-view="uncat" data-drop="uncat">미분류 <span class="count" id="cntUncat">0</span></div>
@@ -431,7 +521,26 @@
     <div class="sidebar-foot">
       <button class="foot-btn" id="btnSettings">⚙ 환경설정</button>
       <div class="credit"><a href="https://x.com/5golgyeo" target="_blank" rel="noopener">오골계</a></div>
-      <div class="credit" style="opacity:.6;margin-top:2px">보관함 v.2</div>
+      <div class="credit version-tag" style="opacity:.9;margin-top:2px">보관함 v.3
+        <div class="version-tooltip">
+          <b>🎉 v.3 업데이트 소식</b>
+          <ul>
+            <li>북마크 추출기 업데이트<br>(재설치 권장)</li>
+            <li>보관함 업데이트 시 자동 백업<br>(다음 업데이트에 작동)</li>
+            <li>북마크 직접 추가 기능<br>(환경설정에서 ON/OFF)</li>
+            <li>게시물 링크로 내용 일부 불러오기<br>(네이버·포스타입·티스토리·노션 등 지원)</li>
+            <li>폴더 추천 기능 개선</li>
+            <li>폰트 3종, 컬러 테마 2종 추가<br>(프리텐다드·둥근모·온글잎 콘콘체)</li>
+            <li>드롭다운 디자인 통일 및 여러 버그 수정</li>
+            <li>대량 북마크에서도 빠르게 동작하도록 성능 개선</li>
+            <b>─────────</b></ul>
+            <b>💾 v.4 업데이트 예정</b><ul>
+            <p>✅모바일용 추출기와 보관함</p>
+            <p>✅구글 드라이브로 데이터 연동</p>
+            <p>Comming soon...</p>
+          </ul>
+        </div>
+      </div>
     </div>
   </aside>
 
@@ -493,10 +602,13 @@
    ============================================================ */
 const STORE_KEY = 'xbm_organizer_v1';
 const DEFAULT_LOGO = 'build/title-logo.png';
+// 브라우저(Electron 앱이 아닐 때)에서 링크 미리보기를 대신 가져와주는 Cloudflare Worker
+// — cloudflare-worker/link-preview.js 참고. CORS 때문에 브라우저는 다른 사이트를 직접 못 가져오므로 이 Worker가 대신 가져와서 돌려줌
+const LINK_PREVIEW_WORKER_URL = 'https://bookmarkbox.n4n4b4.workers.dev/';
 let state = {
   categories: [],          // {id, emoji, name, collapsed, folders:[{id,name}]}
   bookmarks: [],           // {id, tags[], author, handle, content, imageUrl, hasVideo, date, postUrl, links[], folderId}
-  settings: { accent:'#ff5c8a', bg:'#fffafc', text:'#3a2f33', font:'noto', logo:null, logoSize:120, columns:'auto', tagRecommend:true },
+  settings: { accent:'#ff5c8a', bg:'#fffafc', text:'#3a2f33', font:'noto', logo:null, logoSize:120, columns:'auto', tagRecommend:true, enableAddBookmark:false },
   ui: { view:{type:'all'}, sidebarWidth:230, sort:'new', page:1, perPage:50 },
 };
 
@@ -508,12 +620,18 @@ const FONTS = {
   'gowunbatang':"'Gowun Batang', serif",
   'nanumpen':"'Nanum Pen Script', cursive",
   'gamja':"'Gamja Flower', cursive",
+  'pretendard':"'Pretendard', sans-serif",
+  'roundedfixedsys':"'RoundedFixedsys', monospace",
+  'ongleipkonkon':"'OngleipKonkon', cursive",
 };
 const THEMES = [
   {name:'화이트앤핑크', accent:'#ff5c8a', bg:'#fffafc', text:'#3a2f33'},
   {name:'화이트앤블루', accent:'#4a90e2', bg:'#fafdff', text:'#2b3440'},
   {name:'화이트앤민트', accent:'#27b89a', bg:'#f8fffd', text:'#243a35'},
   {name:'화이트앤퍼플', accent:'#9b6cff', bg:'#fdfaff', text:'#352b40'},
+  {name:'화이트앤오렌지', accent:'#e2854f', bg:'#fffaf5', text:'#40311f'},
+  {name:'화이트앤올리브', accent:'#89923c', bg:'#fdfdf5', text:'#32341f'},
+  {name:'화이트앤스머프블루', accent:'#78bfe8', bg:'#f7fbff', text:'#20303f'},
   {name:'화이트앤블랙', accent:'#222222', bg:'#ffffff', text:'#1a1a1a'},
   {name:'다크핑크', accent:'#ff6fa5', bg:'#1b1419', text:'#f2e8ec'},
   {name:'다크블루', accent:'#6aa8ff', bg:'#121821', text:'#e6edf5'},
@@ -521,6 +639,7 @@ const THEMES = [
 ];
 
 function save(){
+  if(dataLoadFailed) return; // 데이터 파일을 못 읽은 상태에서 저장하면 진짜 데이터를 빈 내용으로 덮어쓸 수 있어서 막아둠
   try{
     const json = JSON.stringify(state);
     localStorage.setItem(STORE_KEY, json); // 브라우저 캐시(이중 안전장치)
@@ -531,16 +650,24 @@ function applyLoadedData(raw){
   if(!raw) return;
   try{
     const d = JSON.parse(raw); state = Object.assign(state, d);
-    state.settings = Object.assign({accent:'#ff5c8a',bg:'#fffafc',text:'#3a2f33',font:'noto',logo:null, logoSize:120, columns:'auto', tagRecommend:true}, d.settings||{});
+    state.settings = Object.assign({accent:'#ff5c8a',bg:'#fffafc',text:'#3a2f33',font:'noto',logo:null, logoSize:120, columns:'auto', tagRecommend:true, enableAddBookmark:false}, d.settings||{});
     state.ui = Object.assign({view:{type:'all'}, sidebarWidth:230, sort:'new', page:1, perPage:50}, d.ui||{});
     if(!state.ui.sidebarWidth || state.ui.sidebarWidth>=360) state.ui.sidebarWidth=230;
     state.ui.sidebarWidth=Math.min(520,Math.max(175,state.ui.sidebarWidth));
   }catch(e){}
 }
+// 데이터 파일이 있는데도(백신 프로그램이 잠깐 잠갔거나 디스크 문제 등으로) 못 읽은 경우를 표시해두는 플래그.
+// 이럴 때 "데이터가 없나 보다" 하고 빈 상태로 시작해버리면, 그다음 저장(save)에서 진짜 데이터가 있던
+// 파일이 빈 내용으로 덮어써질 수 있어서 — 이 플래그가 켜져 있는 동안은 save()가 아예 아무것도 안 쓰게 막음.
+let dataLoadFailed = false;
 async function load(){
   try{
     if(window.electronAPI && window.electronAPI.loadData){
       let raw = await window.electronAPI.loadData(); // 데스크톱 앱: 실제 파일에서 우선 로드 (localStorage보다 안전)
+      if(raw && typeof raw==='object' && raw.__loadError){
+        dataLoadFailed = true;
+        return;
+      }
       if(!raw){
         // 파일에 아직 데이터가 없으면(첫 실행 직후거나, 구버전에서 막 업데이트한 경우) localStorage에서 마이그레이션
         raw = localStorage.getItem(STORE_KEY);
@@ -644,8 +771,8 @@ function shortUrl(u){
 }
 function cardLinks(bm){
   const out=[...detectUrls(bm.content)];   // 내용 속 웹주소(프로토콜 유무 무관) 모두 등록
-  if(bm.postUrl) out.push(bm.postUrl);     // 게시글 주소
-  (bm.links||[]).forEach(u=>{ if(u) out.push(u); }); // 수정에서 추가한 링크
+  (bm.links||[]).forEach(u=>{ if(u) out.push(u); }); // 수정/추가에서 넣은 링크 — 게시글 원본 주소보다 먼저 표시
+  if(bm.postUrl) out.push(bm.postUrl);     // 게시글 원본 주소는 항상 마지막
   return [...new Set(out)].slice(0,6);
 }
 async function copyOriginalLink(bm){
@@ -665,13 +792,15 @@ function esc(s){ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&
    ============================================================ */
 function allFolders(){ const a=[]; state.categories.forEach(c=>c.folders.forEach(f=>a.push({...f, catId:c.id}))); return a; }
 function folderById(id){ return allFolders().find(f=>f.id===id); }
-function countInFolder(id){ return state.bookmarks.filter(b=>b.folderId===id).length; }
-function countCat(c){ return c.folders.reduce((n,f)=>n+countInFolder(f.id),0); }
 function viewBookmarks(){
   const v=state.ui.view;
   let list;
   if(v.type==='all') list = state.bookmarks;
-  else if(v.type==='uncat') list = state.bookmarks.filter(b=>!b.folderId || !folderById(b.folderId));
+  else if(v.type==='uncat'){
+    // folderById(b.folderId)를 북마크마다 부르면 그때마다 전체 폴더 목록을 다시 만들어서 느려짐 — 유효한 폴더 id를 한 번만 모아서 재사용
+    const validFolderIds=new Set(allFolders().map(f=>f.id));
+    list = state.bookmarks.filter(b=>!b.folderId || !validFolderIds.has(b.folderId));
+  }
   else list = state.bookmarks.filter(b=>b.folderId===v.folderId);
   const q = (document.getElementById('searchInput').value||'').trim().toLowerCase();
   if(q){
@@ -703,6 +832,7 @@ function applyTheme(){
   const s=state.settings;
   const r=document.documentElement;
   r.style.setProperty('--accent', s.accent);
+  r.style.setProperty('--accent2', s.accent2 || 'var(--accent-soft)');
   r.style.setProperty('--bg', s.bg);
   r.style.setProperty('--text', s.text);
   r.style.setProperty('--font', FONTS[s.font]||FONTS.noto);
@@ -715,6 +845,28 @@ function applyTheme(){
   const ar=parseInt(ac.substr(0,2),16), ag=parseInt(ac.substr(2,2),16), ab=parseInt(ac.substr(4,2),16);
   const aLum=(0.299*ar+0.587*ag+0.114*ab)/255;
   r.style.setProperty('--accent-text', aLum>0.62?'#222':'#fff');
+
+  // 폴더/사이드바 선택색: accent2가 있으면 그 색(예: 태극기 테마의 파랑), 없으면 기존처럼 accent와 동일
+  const navColor = s.accent2 || s.accent;
+  r.style.setProperty('--nav-accent', navColor);
+  const nc=navColor.replace('#','');
+  const nr=parseInt(nc.substr(0,2),16), ng=parseInt(nc.substr(2,2),16), nb=parseInt(nc.substr(4,2),16);
+  const nLum=(0.299*nr+0.587*ng+0.114*nb)/255;
+  r.style.setProperty('--nav-accent-text', nLum>0.62?'#222':'#fff');
+
+  // 태그(pill) 색: tagColor가 있으면 그 색(예: 태극기 테마의 검정), 없으면 기존처럼 accent와 동일
+  const tagColor = s.tagColor || s.accent;
+  r.style.setProperty('--tag-color', tagColor);
+  const tc=tagColor.replace('#','');
+  const tr=parseInt(tc.substr(0,2),16), tg=parseInt(tc.substr(2,2),16), tb=parseInt(tc.substr(4,2),16);
+  const tLum=(0.299*tr+0.587*tg+0.114*tb)/255;
+  r.style.setProperty('--tag-text', tLum>0.62?'#222':'#fff');
+
+  // 상단 버튼(불러오기/카테고리 생성): topBtnBg가 있으면 배경 채움 스타일(예: 태극기 테마의 빨강+하양), 없으면 기존 고스트 스타일
+  r.style.setProperty('--top-btn-bg', s.topBtnBg || 'transparent');
+  r.style.setProperty('--top-btn-text', s.topBtnText || 'var(--accent)');
+  r.style.setProperty('--top-btn-border', s.topBtnBg || 'var(--border)');
+  r.style.setProperty('--top-btn-hover-bg', s.topBtnBg ? `color-mix(in srgb, ${s.topBtnBg} 85%, black 15%)` : 'var(--accent-soft)');
 
   // bg 밝기로 다크/라이트 판별
   const bc=s.bg.replace('#','');
@@ -754,11 +906,72 @@ function applyTheme(){
          width:${s.logoSize||120}px;
          height:auto;
          display:block;">`;
+
+  // "북마크 추가" 버튼: 환경설정에서 켠 사람만 보이게 (필요 없는 사람도 있을 수 있어서 기본은 꺼짐)
+  const addBtn=document.getElementById('btnAddBookmark');
+  if(addBtn) addBtn.hidden = !s.enableAddBookmark;
+
+  adjustTopButtons();
+}
+
+// 상단 버튼(불러오기/카테고리 생성/북마크 추가): 셋 중 하나라도 글자가 한 줄에 안 들어가면 셋 다 정사각형으로, 전부 한 줄에 들어가면 셋 다 원래(직사각형) 모양으로 — 모양을 통일함
+let _lastTopButtonsKey='';
+function adjustTopButtons(){
+  const wrap=document.querySelector('.top-actions');
+  if(!wrap) return;
+  // render()가 호출될 때마다(북마크 추가/삭제/이동 등) 매번 강제 리플로우까지 하며 다시 재는 건 낭비 —
+  // 실제로 결과에 영향을 주는 값(사이드바 폭/버튼 표시 여부/폰트)이 그대로면 건너뜀
+  const addBtnHidden=document.getElementById('btnAddBookmark')?.hidden;
+  const key=state.ui.sidebarWidth+'|'+addBtnHidden+'|'+state.settings.font;
+  if(key===_lastTopButtonsKey) return;
+  _lastTopButtonsKey=key;
+  // 사이드바 자체의 width 트랜지션이 진행 중이면 폭 측정이 애니메이션 중간값을 읽어 틀어지므로 측정 동안만 잠시 꺼둠
+  const sb=document.getElementById('sidebar');
+  const prevSbTransition=sb.style.transition;
+  sb.style.transition='none';
+  sb.offsetHeight;
+  const btns=[...wrap.querySelectorAll('button')].filter(b=>!b.hidden); // 환경설정에서 꺼서 숨긴 버튼은 폭 계산에서 제외
+  btns.forEach(b=>{
+    if(!b.dataset.full) b.dataset.full=b.textContent; // 원래(긴) 이름을 최초 한 번만 기억해둠
+    b.classList.remove('square'); b.style.width=''; b.style.height='';
+  });
+  // 지정한 이름(원래/짧은)으로 전부 바꿔 넣고 리플로우를 강제한 뒤, 한 줄에 들어가는지/폭이 얼마나 필요한지 측정
+  const measure=(useShort)=>{
+    btns.forEach(b=>{ b.textContent = useShort ? (b.dataset.short||b.dataset.full) : b.dataset.full; });
+    wrap.offsetHeight; // requestAnimationFrame은 탭이 비활성/숨김 상태면 지연되어 신뢰할 수 없어서 강제 리플로우로 대신함
+    return btns.map(b=>{
+      const cs=getComputedStyle(b);
+      const oneLine=parseFloat(cs.lineHeight)||Math.round(parseFloat(cs.fontSize)*1.25);
+      const vPad=parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom)+parseFloat(cs.borderTopWidth)+parseFloat(cs.borderBottomWidth);
+      const wrapped=b.scrollHeight - vPad > oneLine*1.4;
+      return {b, wrapped, w:b.getBoundingClientRect().width};
+    });
+  };
+  // 1) 원래(긴) 이름으로 먼저 확인 — 다 들어가면 그대로 직사각형 유지
+  let info=measure(false);
+  if(info.some(i=>i.wrapped)){
+    // 2) 안 들어가면 짧은 이름으로 다시 확인 — 짧은 이름은 들어가면 정사각형 대신 직사각형을 유지하고, 그래도 안 들어갈 때만 정사각형으로 감
+    info=measure(true);
+    if(info.some(i=>i.wrapped)){
+      const w=Math.max(...info.map(i=>i.w)); // 다 같은 폭(가장 넓게 필요한 값)으로 맞춰 통일된 정사각형을 만듦
+      info.forEach(({b})=>{ b.classList.add('square'); b.style.width=w+'px'; b.style.height=w+'px'; });
+    }
+  }
+  sb.style.transition=prevSbTransition;
 }
 
 function renderSidebar(){
   document.getElementById('cntAll').textContent = state.bookmarks.length;
-  document.getElementById('cntUncat').textContent = state.bookmarks.filter(b=>!b.folderId||!folderById(b.folderId)).length;
+  // 폴더별 개수를 북마크 목록을 한 번만 훑어서 미리 구해둠 — 폴더/북마크마다 매번 전체 목록을 다시 훑으면
+  // (folderById가 매번 allFolders()를 새로 만들고, countInFolder가 매번 전체 북마크를 필터링) 북마크가 많을수록 크게 느려짐
+  const folderCounts=new Map();
+  const validFolderIds=new Set(allFolders().map(f=>f.id));
+  let uncatCount=0;
+  state.bookmarks.forEach(b=>{
+    if(b.folderId && validFolderIds.has(b.folderId)) folderCounts.set(b.folderId, (folderCounts.get(b.folderId)||0)+1);
+    else uncatCount++;
+  });
+  document.getElementById('cntUncat').textContent = uncatCount;
   const v=state.ui.view;
   document.getElementById('navAll').classList.toggle('active', v.type==='all');
   document.getElementById('navUncat').classList.toggle('active', v.type==='uncat');
@@ -770,7 +983,7 @@ function renderSidebar(){
     head.innerHTML=`<span class="cat-handle" title="드래그해서 순서 변경">⠿</span>
       <span class="twist">▼</span>
       <span class="name">${esc((cat.emoji?cat.emoji+' ':'')+cat.name)}</span>
-      <span class="count">${countCat(cat)}</span>
+      <span class="count">${cat.folders.reduce((n,f)=>n+(folderCounts.get(f.id)||0),0)}</span>
       <span class="mini" data-act="addFolder" title="폴더 추가">＋</span>
       <span class="mini" data-act="editCat" title="이름/이모지 수정">✎</span>
       <span class="mini" data-act="delCat" title="삭제">🗑</span>`;
@@ -837,7 +1050,7 @@ function renderSidebar(){
       fd.dataset.fid=f.id; fd.dataset.cid=cat.id;
       fd.innerHTML=`<span class="folder-handle" title="드래그해서 순서 변경">⠿</span>
         <span class="fname">${esc(f.name)}</span>
-        <span class="count">${countInFolder(f.id)}</span>
+        <span class="count">${folderCounts.get(f.id)||0}</span>
         <span class="mini" data-act="editFolder">✎</span>
         <span class="mini" data-act="delFolder">🗑</span>`;
       fd.addEventListener('click',(e)=>{
@@ -982,7 +1195,7 @@ function makeCard(bm){
   return card;
 }
 
-function render(){ applyTheme(); renderSidebar(); renderMain(); document.getElementById('sidebar').style.width=state.ui.sidebarWidth+'px'; }
+function render(){ document.getElementById('sidebar').style.width=state.ui.sidebarWidth+'px'; applyTheme(); renderSidebar(); renderMain(); }
 
 /* ========== 선택 모드 ========== */
 let selMode = false;
@@ -1082,15 +1295,14 @@ document.getElementById('btnSelMove').onclick=()=>{
   const selBookmarks=state.bookmarks.filter(b=>selIds.has(b.id));
   const tagPool=[...new Set(selBookmarks.flatMap(b=>b.tags||[]))];
   const recs=recommendFolders(tagPool);
-  const opts=buildMoveSelectOpts(recs, null, false);
-  if(!opts){ showToast('이동할 폴더가 없어요. 먼저 카테고리와 폴더를 만들어 주세요.'); return; }
+  if(!state.categories.some(c=>c.folders.length)){ showToast('이동할 폴더가 없어요. 먼저 카테고리와 폴더를 만들어 주세요.'); return; }
   const chips=buildRecChipsHtml(recs);
   const ov=document.createElement('div'); ov.className='modal-overlay';
   ov.innerHTML=`<div class="modal" style="max-width:380px">
     <h2 style="margin:0 0 12px">선택 이동</h2>
     <p style="margin:0 0 10px;color:var(--muted)"><b style="color:var(--accent)">${selIds.size}개</b>의 북마크를 이동할 폴더를 선택해 주세요.</p>
     ${chips}
-    <select id="selMoveFolder" style="width:100%;margin-bottom:18px;padding:9px 12px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-family:inherit;font-size:14px">${opts}</select>
+    <select id="selMoveFolder" style="width:100%;margin-bottom:18px;padding:9px 12px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-family:inherit;font-size:14px"></select>
     <div style="display:flex;gap:10px;justify-content:flex-end">
       <button class="btn" id="selMoveCancelBtn">취소</button>
       <button class="btn primary" id="selMoveOkBtn">이동</button>
@@ -1098,7 +1310,9 @@ document.getElementById('btnSelMove').onclick=()=>{
   </div>`;
   document.body.appendChild(ov);
   const selEl=ov.querySelector('#selMoveFolder');
+  populateFolderSelect(selEl, null, false);
   wireRecChips(ov, selEl);
+  skinSelect(selEl);
   ov.querySelector('#selMoveCancelBtn').onclick=()=>ov.remove();
   ov.querySelector('#selMoveOkBtn').onclick=()=>{
     const fid=selEl.value;
@@ -1136,7 +1350,9 @@ function closeTopModal(){
   return false;
 }
 document.addEventListener('wheel', e=>{
-  const box = e.target.closest('.cat-list, .cards, .modal-scroll');
+  // 열려있는 드롭다운(태그 자동완성, 커스텀 셀렉트) 위에서 스크롤하면 그 드롭다운 자신을 스크롤하고,
+  // 뒤에 있는 모달/목록까지 같이 스크롤되지 않게 함 — 반드시 .cat-list/.cards/.modal-scroll보다 먼저 확인
+  const box = e.target.closest('.tag-ac-drop.show') || e.target.closest('.cat-list, .cards, .modal-scroll');
   if(!box) return;
   if(box.scrollHeight<=box.clientHeight) return;
   e.preventDefault();
@@ -1149,7 +1365,7 @@ document.addEventListener('keydown',e=>{
   const isTextArea=target && target.tagName==='TEXTAREA';
   if(e.key==='Escape'){
     const openDrop=document.querySelector('.tag-ac-drop.show');
-    if(openDrop){ openDrop.classList.remove('show'); openDrop.closest('.dropdown-wrap')?.classList.remove('open'); e.preventDefault(); return; }
+    if(openDrop){ openDrop.classList.remove('show'); (openDrop._wrap||openDrop.closest('.dropdown-wrap'))?.classList.remove('open'); e.preventDefault(); return; }
     if(closeTopModal()){ e.preventDefault(); return; }
     if(selMode){ exitSelMode(); e.preventDefault(); return; }
     const search=document.getElementById('searchInput');
@@ -1158,7 +1374,8 @@ document.addEventListener('keydown',e=>{
     }
   } else if(e.key==='Enter'){
     const root=topModalRoot();
-    if(!root || isTextArea || root.querySelector('.tag-ac-drop.show')) return;
+    // 커스텀 셀렉트 드롭다운은 모달 밖(body)에 떠 있어서 root 안에서 찾히지 않으므로 전체 문서에서 확인
+    if(!root || isTextArea || document.querySelector('.tag-ac-drop.show')) return;
     const buttons=[...root.querySelectorAll('.btn.primary')].filter(btn=>!btn.disabled && btn.offsetParent!==null);
     const primary=buttons[buttons.length-1];
     if(primary){ e.preventDefault(); primary.click(); }
@@ -1211,17 +1428,29 @@ function moveFolderToCategory(srcCid, srcFid, tgtCid){
 }
 
 function addFolder(cat){
+  const showTags = !!state.settings.tagRecommend;
   openModal(`<h2>새 폴더</h2>
     <div class="row"><input type="text" id="newFolderName" placeholder="폴더 이름"></div>
+    ${showTags ? `
+    <label style="margin-top:14px">속성 태그 (스페이스바 또는 / 로 구분)</label>
+    <div class="tag-ac-wrap">
+      <input type="text" id="newFolderTags" autocomplete="off">
+      <div class="tag-ac-drop" id="folderTagAcDrop"></div>
+    </div>
+    ` : ''}
     <div class="modal-actions">
       <button class="btn ghost" onclick="closeModal()">취소</button>
       <button class="btn primary" id="okAddFolder">만들기</button>
     </div>`);
   const inp=document.getElementById('newFolderName');
+  const tagsInp=showTags ? document.getElementById('newFolderTags') : null;
+  if(tagsInp) initTagAutocomplete(tagsInp, document.getElementById('folderTagAcDrop'));
   inp.focus();
   document.getElementById('okAddFolder').onclick=()=>{
     const name=inp.value.trim(); if(!name) return;
-    cat.folders.push({id:uid(), name});
+    const folder={id:uid(), name};
+    if(tagsInp){ const tags=tagsInp.value.split('/').map(s=>s.trim()).filter(Boolean); if(tags.length) folder.tags=tags; }
+    cat.folders.push(folder);
     cat.collapsed=false;
     save(); renderSidebar(); closeModal();
   };
@@ -1268,7 +1497,6 @@ function editFolder(cat,f){
       <input type="text" id="editFolderTags" value="${esc((f.tags||[]).join(' / '))}" autocomplete="off">
       <div class="tag-ac-drop" id="folderTagAcDrop"></div>
     </div>
-    <div class="hint">여기 등록한 태그와 겹치는 북마크를 이동할 때 이 폴더를 추천해줘요.</div>
     ` : ''}
     <div class="modal-actions">
       <button class="btn ghost" onclick="closeModal()">취소</button>
@@ -1329,23 +1557,19 @@ function recommendFolders(tagsList, limit=3){
   scored.sort((a,b)=>b.score-a.score);
   return scored.slice(0,limit);
 }
-function buildMoveSelectOpts(recs, selectedId, includeUncat){
-  let opts = includeUncat ? `<option value="">— 미분류 —</option>` : '';
-  const recIds=new Set(recs.map(r=>r.folder.id));
-  if(recs.length){
-    opts += `<optgroup label="💡 추천 폴더">${recs.map(r=>`<option value="${r.folder.id}" ${selectedId===r.folder.id?'selected':''}>${folderOptionLabel(r.cat,r.folder)}</option>`).join('')}</optgroup>`;
-  }
-  let rest='';
-  state.categories.forEach(c=>{ c.folders.forEach(f=>{
-    if(recIds.has(f.id)) return;
-    rest += `<option value="${f.id}" ${selectedId===f.id?'selected':''}>${folderOptionLabel(c,f)}</option>`;
-  }); });
-  opts += recs.length ? (rest?`<optgroup label="전체 폴더">${rest}</optgroup>`:'') : rest;
-  return opts;
+// 폴더 select를 카테고리별 optgroup으로 채움 (추가/수정/이동 모달 공통) — 추천 폴더는 이 안에 넣지 않고
+// 항상 별도 칩(buildRecChipsHtml/wireRecChips)으로만 보여줌: 드롭다운 안에 또 나오면 같은 정보가 중복됨
+function populateFolderSelect(sel, selectedId, includeUncat){
+  sel.innerHTML = includeUncat ? `<option value="">— 미분류 —</option>` : '';
+  state.categories.forEach(c=>{ if(!c.folders.length) return;
+    const og=document.createElement('optgroup'); og.label=(c.emoji?c.emoji+' ':'')+c.name;
+    c.folders.forEach(f=>{ const o=document.createElement('option'); o.value=f.id; o.textContent=f.name; if(selectedId===f.id) o.selected=true; og.appendChild(o); });
+    sel.appendChild(og);
+  });
 }
 function buildRecChipsHtml(recs){
   if(!recs.length) return '';
-  return `<div class="hint" style="margin-bottom:6px">💡 태그가 겹치는 추천 폴더예요</div>
+  return `<div style="margin-bottom:6px; font-size:13px; font-weight:700; color:var(--accent)">💡 추천 폴더</div>
     <div class="rec-chips">${recs.map(r=>`<button type="button" class="pill rec-chip" data-fid="${r.folder.id}">${folderOptionLabel(r.cat,r.folder)}</button>`).join('')}</div>`;
 }
 function wireRecChips(root, selectEl){
@@ -1353,10 +1577,123 @@ function wireRecChips(root, selectEl){
     if(chip.dataset.fid===selectEl.value) chip.classList.add('sel');
     chip.onclick=()=>{
       selectEl.value=chip.dataset.fid;
+      selectEl.dispatchEvent(new Event('change')); // skinSelect로 씌운 커스텀 드롭다운도 같이 갱신되도록
       root.querySelectorAll('.rec-chip').forEach(c=>c.classList.toggle('sel', c===chip));
     };
   });
 }
+// 네이티브 <select>를 테마에 맞는 커스텀 드롭다운(정렬 드롭다운과 같은 디자인)으로 덮어씌움.
+// select 자체는 숨겨서 그대로 두고(값 읽기/쓰기, change 이벤트는 기존 코드 그대로 동작), 보이는 UI만 새로 그려줌.
+// 메뉴는 모달 안(overflow로 잘리는 위치)에 두지 않고 body 바로 아래 position:fixed로 띄워서,
+// 모달 경계에 잘리지 않고 네이티브 <select> 드롭다운처럼 화면 위에 자유롭게 펼쳐지게 함.
+let _selectOutsideClickWired=false;
+let _selectScrollCloseWired=false;
+function skinSelect(select){
+  if(!select || select.dataset.skinned) return;
+  select.dataset.skinned='1';
+  // select에 걸려있던 인라인 스타일 중 여백(margin)만 그대로 이어받고, 테두리/배경 등 나머지는 버림
+  // (그 부분은 이제 새로 그리는 버튼/메뉴가 자기 스타일로 담당하므로, 그대로 복사하면 이중으로 겹쳐 보임)
+  const cs=getComputedStyle(select);
+  const wrap=document.createElement('div');
+  wrap.className='dropdown-wrap custom-select-wrap';
+  wrap.style.margin=cs.marginTop+' '+cs.marginRight+' '+cs.marginBottom+' '+cs.marginLeft;
+  select.removeAttribute('style');
+  select.style.display='none';
+  select.parentNode.insertBefore(wrap, select);
+  wrap.appendChild(select);
+  const btn=document.createElement('button');
+  btn.type='button'; btn.className='dropdown-btn custom-select-btn';
+  btn.innerHTML='<span class="custom-select-label"></span><span class="dropdown-arrow">▾</span>';
+  wrap.appendChild(btn);
+
+  const menu=document.createElement('div');
+  menu.className='tag-ac-drop dropdown-menu custom-select-menu custom-select-menu-portal';
+  menu._wrap=wrap; // body로 옮겨져서 더 이상 wrap의 자손이 아니므로, 바깥 클릭 판정용으로 따로 참조를 들고 있음
+  document.body.appendChild(menu);
+
+  const makeItem=(opt)=>{
+    const item=document.createElement('div');
+    item.className='tag-ac-item'; item.textContent=opt.textContent; item.dataset.value=opt.value;
+    if(opt.dataset.font) item.style.fontFamily=opt.dataset.font; // 폰트 선택처럼 항목마다 다른 미리보기가 필요한 경우(option의 data-font)
+    item.addEventListener('click',e=>{
+      e.stopPropagation();
+      select.value=opt.value;
+      select.dispatchEvent(new Event('change'));
+      closeMenu();
+    });
+    return item;
+  };
+  [...select.children].forEach(node=>{
+    if(node.tagName==='OPTGROUP'){
+      const gl=document.createElement('div'); gl.className='select-group-label'; gl.textContent=node.label;
+      menu.appendChild(gl);
+      [...node.children].forEach(opt=>menu.appendChild(makeItem(opt)));
+    } else if(node.tagName==='OPTION'){
+      menu.appendChild(makeItem(node));
+    }
+  });
+
+  const syncUI=()=>{
+    const sel=select.options[select.selectedIndex];
+    const labelEl=btn.querySelector('.custom-select-label');
+    labelEl.textContent = sel ? sel.textContent : '';
+    labelEl.style.fontFamily = (sel && sel.dataset.font) ? sel.dataset.font : '';
+    menu.querySelectorAll('.tag-ac-item').forEach(it=>it.classList.toggle('sel', it.dataset.value===select.value));
+  };
+  const positionMenu=()=>{
+    const r=btn.getBoundingClientRect();
+    const spaceBelow=window.innerHeight - r.bottom - 12;
+    const spaceAbove=r.top - 12;
+    menu.style.left=r.left+'px';
+    menu.style.width=r.width+'px';
+    if(spaceBelow<120 && spaceAbove>spaceBelow){
+      menu.style.top='';
+      menu.style.bottom=(window.innerHeight - r.top + 4)+'px';
+      menu.style.maxHeight=Math.min(240, spaceAbove)+'px';
+    } else {
+      menu.style.bottom='';
+      menu.style.top=(r.bottom+4)+'px';
+      menu.style.maxHeight=Math.min(240, Math.max(120, spaceBelow))+'px';
+    }
+  };
+  const closeMenu=()=>{ menu.classList.remove('show'); wrap.classList.remove('open'); };
+  const openMenu=()=>{
+    document.querySelectorAll('.custom-select-menu-portal.show').forEach(m=>{ if(m!==menu){ m.classList.remove('show'); m._wrap?.classList.remove('open'); } });
+    positionMenu();
+    menu.classList.add('show');
+    wrap.classList.add('open');
+  };
+  btn.addEventListener('click', e=>{
+    e.stopPropagation();
+    if(menu.classList.contains('show')) closeMenu(); else openMenu();
+  });
+  select.addEventListener('change', syncUI);
+  syncUI();
+
+  if(!_selectOutsideClickWired){
+    _selectOutsideClickWired=true;
+    document.addEventListener('click', e=>{
+      document.querySelectorAll('.custom-select-menu-portal.show').forEach(m=>{
+        const w=m._wrap;
+        if(w && !w.contains(e.target) && !m.contains(e.target)){ m.classList.remove('show'); w.classList.remove('open'); }
+      });
+    });
+  }
+  if(!_selectScrollCloseWired){
+    _selectScrollCloseWired=true;
+    // 뒤에 있는 모달/페이지가 스크롤되면 메뉴를 닫음(버튼 위치가 바뀌므로) — 단, 메뉴 자체를 스크롤하는 중이면 그대로 둠
+    window.addEventListener('scroll', e=>{
+      document.querySelectorAll('.custom-select-menu-portal.show').forEach(m=>{
+        if(e.target===m || m.contains(e.target)) return;
+        m.classList.remove('show'); m._wrap?.classList.remove('open');
+      });
+    }, true);
+    window.addEventListener('resize', ()=>{
+      document.querySelectorAll('.custom-select-menu-portal.show').forEach(m=>{ m.classList.remove('show'); m._wrap?.classList.remove('open'); });
+    });
+  }
+}
+
 function reorderCustom(draggedId, targetId){
   if(!draggedId || draggedId===targetId) return;
   let full=[...state.bookmarks].sort((a,b)=>(a.order??0)-(b.order??0));
@@ -1412,14 +1749,13 @@ function openDuplicateCheck(){
 function openMovePicker(bm, anchor){
   const folders=allFolders();
   const recs=recommendFolders(bm.tags||[]);
-  const opts=buildMoveSelectOpts(recs, bm.folderId, true);
   const chips=buildRecChipsHtml(recs);
   const ov=document.createElement('div'); ov.className='modal-overlay';
   ov.innerHTML=`<div class="modal" style="max-width:380px">
     <h2 style="margin:0 0 12px">폴더로 이동</h2>
     <p style="margin:0 0 10px;color:var(--muted)">이 북마크를 이동할 폴더를 선택해 주세요.</p>
     ${chips}
-    <select id="moveSel" style="width:100%;margin-bottom:18px;padding:9px 12px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-family:inherit;font-size:14px">${opts}</select>
+    <select id="moveSel" style="width:100%;margin-bottom:18px;padding:9px 12px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-family:inherit;font-size:14px"></select>
     ${folders.length?'':'<div class="hint" style="margin:-10px 0 14px">아직 폴더가 없어요. 좌측 [카테고리 생성]으로 먼저 폴더를 만들어 주세요.</div>'}
     <div style="display:flex;gap:10px;justify-content:flex-end">
       <button class="btn" id="moveCancelBtn">취소</button>
@@ -1428,7 +1764,9 @@ function openMovePicker(bm, anchor){
   </div>`;
   document.body.appendChild(ov);
   const selEl=ov.querySelector('#moveSel');
+  populateFolderSelect(selEl, bm.folderId, true);
   wireRecChips(ov, selEl);
+  skinSelect(selEl);
   ov.querySelector('#moveCancelBtn').onclick=()=>ov.remove();
   ov.querySelector('#moveOkBtn').onclick=()=>{
     moveBookmark(bm.id, selEl.value||null);
@@ -1455,6 +1793,8 @@ function getAllTags(){
 
 function initTagAutocomplete(input, drop){
   let activeIdx=-1;
+  // 키 입력마다 전체 북마크(수천 개일 수 있음)를 다시 훑지 않도록, 이 자동완성 인스턴스가 켜질 때 한 번만 태그 목록을 구해서 재사용
+  const allTags=getAllTags();
 
   function getCurrentWord(){
     // 커서 위치 기준 현재 입력 중인 마지막 태그 단어
@@ -1507,7 +1847,7 @@ function initTagAutocomplete(input, drop){
   input.addEventListener('input',()=>{
     const word=getCurrentWord();
     if(!word){ hideDrop(); return; }
-    const all=getAllTags();
+    const all=allTags;
     const matched=all.filter(t=>t.toLowerCase().includes(word.toLowerCase()) && t!==word);
     showDrop(matched.slice(0,10));
   });
@@ -1550,6 +1890,8 @@ function initTagAutocomplete(input, drop){
 
 function editBookmark(bm){
   const linkInputs=(bm.links||[]).map((u,i)=>`<div class="linkrow"><input type="text" class="exlink" value="${esc(u)}"><button class="btn" onclick="this.parentElement.remove()">－</button></div>`).join('');
+  const recs=recommendFolders(bm.tags||[]);
+  const chips=buildRecChipsHtml(recs);
   openModal(`<h2>북마크 수정</h2>
     <label>태그 (스페이스바 또는 / 로 구분)</label>
     <div class="tag-ac-wrap">
@@ -1564,10 +1906,11 @@ function editBookmark(bm){
     <textarea id="eContent">${esc(bm.content)}</textarea>
     <label>이미지 URL</label>
     <input type="text" id="eImage" value="${esc(bm.imageUrl)}">
-    <label>추가 링크 <span class="hint">(게시물 링크 외에 더 넣고 싶은 주소)</span></label>
+    <label>추가 링크</label>
     <div id="linkBox">${linkInputs}</div>
     <button class="btn" id="addLink" style="margin-top:6px">＋ 링크 추가</button>
     <label>폴더</label>
+    ${chips}
     <select id="eFolder"></select>
     <div class="modal-actions">
       <button class="btn ghost" onclick="closeModal()">닫기</button>
@@ -1575,11 +1918,9 @@ function editBookmark(bm){
     </div>`);
   // 폴더 옵션
   const sel=document.getElementById('eFolder');
-  sel.innerHTML=`<option value="">— 미분류 —</option>`;
-  state.categories.forEach(c=>{ if(!c.folders.length) return;
-    const og=document.createElement('optgroup'); og.label=(c.emoji?c.emoji+' ':'')+c.name;
-    c.folders.forEach(f=>{ const o=document.createElement('option'); o.value=f.id; o.textContent=f.name; if(bm.folderId===f.id)o.selected=true; og.appendChild(o); });
-    sel.appendChild(og); });
+  populateFolderSelect(sel, bm.folderId, true);
+  wireRecChips(modalEl, sel);
+  skinSelect(sel);
   document.getElementById('addLink').onclick=()=>{
     const d=document.createElement('div'); d.className='linkrow';
     d.innerHTML=`<input type="text" class="exlink" placeholder="https://..."><button class="btn">－</button>`;
@@ -1599,6 +1940,129 @@ function editBookmark(bm){
 
   // 태그 자동완성
   initTagAutocomplete(document.getElementById('eTags'), document.getElementById('tagAcDrop'));
+}
+// 게시물 링크에서 내용/이미지를 가져옴 — 데스크톱 앱이면 Electron 메인 프로세스가, 브라우저면 Cloudflare Worker가 대신 가져옴(둘 다 CORS 제약이 없는 쪽에서 fetch)
+async function fetchLinkPreview(url){
+  if(window.electronAPI && window.electronAPI.fetchLinkPreview){
+    return window.electronAPI.fetchLinkPreview(url).catch(e=>({error:String(e)}));
+  }
+  try{
+    const res=await fetch(LINK_PREVIEW_WORKER_URL+'?url='+encodeURIComponent(url), {signal:AbortSignal.timeout(10000)});
+    const data=await res.json();
+    return data;
+  }catch(e){
+    return {error:String(e)};
+  }
+}
+function openAddBookmark(){
+  openModal(`<h2>북마크 추가</h2>
+    <label>태그 (스페이스바 또는 / 로 구분)</label>
+    <div class="tag-ac-wrap">
+      <input type="text" id="aTags" autocomplete="off">
+      <div class="tag-ac-drop" id="tagAcDrop"></div>
+    </div>
+    <div class="row">
+      <div><label>작성자</label><input type="text" id="aAuthor"></div>
+      <div><label>계정</label><input type="text" id="aHandle" placeholder="@handle"></div>
+    </div>
+    <label>게시물 링크</label>
+    <div class="hint" style="margin-top:-3px; margin-bottom:6px">링크를 입력하면 내용과 이미지 링크를 자동으로 가져옵니다.</div>
+    <input type="text" id="aPostUrl" placeholder="https://...">
+    <label>내용</label>
+    <textarea id="aContent"></textarea>
+    <label>이미지 URL</label>
+    <input type="text" id="aImage" placeholder="https://...">
+    <label>추가 링크</label>
+    <div id="linkBox"></div>
+    <button class="btn" id="addLink" style="margin-top:6px">＋ 링크 추가</button>
+    <label>폴더</label>
+    <div id="aRecChips"></div>
+    <select id="aFolder"></select>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">닫기</button>
+      <button class="btn primary" id="okAdd">추가</button>
+    </div>`);
+  // 폴더 옵션 (현재 보고 있는 폴더가 있으면 기본 선택)
+  const sel=document.getElementById('aFolder');
+  const curFolderId = state.ui.view.type==='folder' ? state.ui.view.folderId : null;
+  populateFolderSelect(sel, curFolderId, true);
+  skinSelect(sel);
+  // 태그를 입력하는 동안 추천 폴더도 실시간으로 갱신 (수정/이동과 달리 추가할 땐 태그가 이 모달 안에서 처음 입력됨)
+  const recChipsBox=document.getElementById('aRecChips');
+  const refreshAddRecChips=()=>{
+    const tags=document.getElementById('aTags').value.split('/').map(s=>s.trim()).filter(Boolean);
+    recChipsBox.innerHTML=buildRecChipsHtml(recommendFolders(tags));
+    wireRecChips(recChipsBox, sel);
+  };
+  refreshAddRecChips();
+  document.getElementById('aTags').addEventListener('input', refreshAddRecChips);
+  const addLinkRow=(value='')=>{
+    const d=document.createElement('div'); d.className='linkrow';
+    d.innerHTML=`<input type="text" class="exlink" placeholder="https://..."><button class="btn">－</button>`;
+    d.querySelector('input').value=value;
+    d.querySelector('button').onclick=()=>d.remove();
+    document.getElementById('linkBox').appendChild(d);
+  };
+  document.getElementById('addLink').onclick=()=>addLinkRow();
+  document.getElementById('okAdd').onclick=()=>{
+    const content=document.getElementById('aContent').value.trim();
+    const postUrl=document.getElementById('aPostUrl').value.trim();
+    const author=document.getElementById('aAuthor').value.trim();
+    if(!content && !postUrl && !author){ showToast('내용, 게시물 링크, 작성자 중 하나는 입력해 주세요.'); return; }
+    const bm={
+      id: postUrl || uid(),
+      tags: document.getElementById('aTags').value.split('/').map(s=>s.trim()).filter(Boolean),
+      author, handle: document.getElementById('aHandle').value.trim(),
+      content,
+      imageUrl: document.getElementById('aImage').value.trim(),
+      hasVideo:false,
+      date: new Date().toISOString(), postUrl,
+      links: [...document.querySelectorAll('.exlink')].map(i=>i.value.trim()).filter(Boolean),
+      folderId: document.getElementById('aFolder').value||null,
+    };
+    state.bookmarks.push(bm);
+    save(); state.ui.page=1; render(); closeModal();
+    showToast('북마크를 추가했어요.');
+  };
+
+  // 게시물 링크를 입력하면 내용/이미지를 자동으로 채워줌
+  // 1) 이미 보관함에 같은 링크가 있으면 그 정보를 그대로 불러오고
+  // 2) 없으면 그 링크 페이지의 Open Graph 메타태그(og:description/og:image 등)를 가져와 채움
+  //    (데스크톱 앱이면 Electron이, 브라우저면 Cloudflare Worker가 대신 가져옴 — fetchLinkPreview 참고)
+  // 링크를 넣을 때마다(같은 링크를 다시 넣어도) 항상 새로 가져와서 덮어씀 — 직접 고쳐둔 값이 있어도 최신 정보로 교체됨
+  const setVal=(id,val)=>{ const el=document.getElementById(id); if(el) el.value=val||''; };
+  document.getElementById('aPostUrl').addEventListener('blur',async ()=>{
+    const url=document.getElementById('aPostUrl').value.trim();
+    if(!url) return;
+    const match=state.bookmarks.find(b=>b.postUrl===url);
+    if(match){
+      setVal('aContent', match.content);
+      setVal('aAuthor', match.author);
+      setVal('aHandle', match.handle);
+      setVal('aImage', match.imageUrl);
+      setVal('aTags', (match.tags||[]).join(' / '));
+      showToast('이미 보관함에 있는 링크예요. 기존 정보를 불러왔어요.');
+      return;
+    }
+    showToast('링크에서 내용을 가져오는 중...', 60000);
+    const res=await fetchLinkPreview(url);
+    const puEl=document.getElementById('aPostUrl');
+    if(!puEl || puEl.value.trim()!==url) return; // 그 사이에 모달을 닫았거나 링크를 바꿨으면 무시
+    if(!res || res.error){ showToast('링크에서 정보를 가져오지 못했어요. 직접 입력해 주세요.'); return; }
+    // 네이버 플레이스면 상호명을, 그 외 일반 게시물이면 글 제목을 "작성자"에 넣음
+    setVal('aAuthor', res.title);
+    setVal('aContent', res.description || res.title);
+    setVal('aImage', res.image);
+    // "계정" 칸: 네이버 플레이스면 영업시간, 그 외엔 실제 작성자 닉네임
+    setVal('aHandle', res.isPlace ? res.hours : res.author);
+    document.getElementById('linkBox').innerHTML=''; // 추가 링크도 새 링크 기준으로 다시 채움
+    (res.extraLinks||[]).forEach(u=>{ if(u) addLinkRow(u); });
+    showToast('링크에서 내용을 가져왔어요.');
+  });
+
+  // 태그 자동완성
+  initTagAutocomplete(document.getElementById('aTags'), document.getElementById('tagAcDrop'));
+  document.getElementById('aPostUrl').focus();
 }
 function openFull(bm){
   const who=[bm.author,bm.handle].filter(Boolean).join(' | ');
@@ -1625,12 +2089,15 @@ function openFull(bm){
    ============================================================ */
 function openSettings(){
   const s=state.settings;
-  const sw=THEMES.map(t=>`<div class="swatch ${t.accent===s.accent&&t.bg===s.bg?'sel':''}" title="${t.name}"
-      style="--sw-bg:${t.bg};--sw-accent:${t.accent}" data-t='${JSON.stringify(t)}'>
-      <div class="swatch-bg"></div>
-      <div class="swatch-accent"></div>
-    </div>`).join('');
-  const fontOpts=Object.keys(FONTS).map(k=>`<option value="${k}" ${s.font===k?'selected':''}>${({noto:'Noto Sans KR (기본)',nanumgothic:'나눔고딕',nanummyeongjo:'나눔명조',gowundodum:'고운돋움',gowunbatang:'고운바탕',nanumpen:'나눔손글씨 펜',gamja:'감자꽃'})[k]}</option>`).join('');
+  const sw=THEMES.map(t=>{
+    const sel = t.accent===s.accent && t.bg===s.bg && (t.accent2||null)===(s.accent2||null);
+    const style = t.accent2
+      ? `--sw-bg:${t.bg};--sw-accent:${t.accent};background:conic-gradient(${t.bg} 0deg 90deg, ${t.text} 90deg 180deg, ${t.accent} 180deg 270deg, ${t.accent2} 270deg 360deg)`
+      : `--sw-bg:${t.bg};--sw-accent:${t.accent}`;
+    const inner = t.accent2 ? '' : `<div class="swatch-bg"></div><div class="swatch-accent"></div>`;
+    return `<div class="swatch ${sel?'sel':''}" title="${t.name}" style="${style}" data-t='${JSON.stringify(t)}'>${inner}</div>`;
+  }).join('');
+  const fontOpts=Object.keys(FONTS).map(k=>`<option value="${k}" data-font="${esc(FONTS[k])}" ${s.font===k?'selected':''}>${({noto:'Noto Sans KR (기본)',nanumgothic:'나눔고딕',nanummyeongjo:'나눔명조',gowundodum:'고운돋움',gowunbatang:'고운바탕',nanumpen:'나눔손글씨 펜',gamja:'감자꽃',pretendard:'프리텐다드',roundedfixedsys:'둥근모 (도트체)',ongleipkonkon:'온글잎 콘콘체'})[k]}</option>`).join('');
   openModal(`<h2>환경설정</h2>
     <label>테마 (프리셋)</label>
     <div class="swatches">${sw}</div>
@@ -1683,26 +2150,40 @@ function openSettings(){
     <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0">
       <input type="checkbox" id="setTagRecommend" ${s.tagRecommend?'checked':''}> 태그 기반 폴더 추천 사용
     </label>
-    <div class="hint">폴더 수정에서 등록한 속성 태그와 북마크 태그가 겹치면, 이동할 때 폴더를 추천해줘요.</div>
+    <div class="hint">폴더의 속성 태그와 북마크 태그가 겹치면, 이동할 때 폴더를 추천합니다.</div>
+    <hr style="border:none;border-top:1px solid var(--border-soft);margin:20px 0">
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0">
+      <input type="checkbox" id="setEnableAddBookmark" ${s.enableAddBookmark?'checked':''}> 북마크 직접 추가 기능 사용
+    </label>
+    <div class="hint">북마크를 직접 추가할 수 있습니다.</div>
     <hr style="border:none;border-top:1px solid var(--border-soft);margin:20px 0">
     <label>데이터 백업</label>
     <div class="row">
       <button class="btn" id="expBackup">백업 내보내기(.json)</button>
       <button class="btn" id="impBackup">백업 불러오기</button>
     </div>
-    <div class="hint">정리한 내용은 자동 저장돼요. 다른 PC로 옮기거나 안전하게 보관하려면 백업을 내보내세요.</div>
+    <div class="hint">정리한 내용은 자동 저장되지만, 안전한 데이터 관리를 위해 백업을 추천드립니다.</div>
     <div class="modal-actions">
       <button class="btn ghost" id="resetAll" style="margin-right:auto;color:var(--danger)">전체 초기화</button>
       <button class="btn primary" onclick="closeModal()">완료</button>
     </div>`);
   modalEl.querySelectorAll('.swatch').forEach(el=>el.onclick=()=>{
     const t=JSON.parse(el.getAttribute('data-t'));
-    state.settings.accent=t.accent; state.settings.bg=t.bg; state.settings.text=t.text;
+    state.settings.accent=t.accent; state.settings.bg=t.bg; state.settings.text=t.text; state.settings.accent2=t.accent2||null; state.settings.tagColor=t.tagColor||null;
+    state.settings.topBtnBg=t.topBtnBg||null; state.settings.topBtnText=t.topBtnText||null;
     save(); applyTheme(); openSettings();
   });
-  document.getElementById('setAccent').oninput=e=>{ state.settings.accent=e.target.value; save(); applyTheme(); };
+  document.getElementById('setAccent').oninput=e=>{ state.settings.accent=e.target.value; state.settings.accent2=null; state.settings.tagColor=null; state.settings.topBtnBg=null; state.settings.topBtnText=null; save(); applyTheme(); };
   document.getElementById('setFont').onchange=e=>{ state.settings.font=e.target.value; save(); applyTheme(); };
+  skinSelect(document.getElementById('setFont'));
   document.getElementById('setTagRecommend').onchange=e=>{ state.settings.tagRecommend=e.target.checked; save(); };
+  document.getElementById('setEnableAddBookmark').onchange=e=>{
+    state.settings.enableAddBookmark=e.target.checked;
+    // 버튼이 3개가 되면 사이드바가 좁을 때 "카테고리 생성"이 한 줄에 안 들어가서 정사각형으로 바뀌는데,
+    // 사이드바를 조금 넓히면 세 개 다 원래(직사각형) 모양을 유지할 수 있어서 켤 때만 자동으로 넓혀줌(줄일 땐 그대로 둠)
+    if(e.target.checked && state.ui.sidebarWidth<260) state.ui.sidebarWidth=260;
+    save(); render();
+  };
   (function(){
     const box=document.getElementById('setCols'); const cur=state.settings.columns||'auto';
     [['auto','자동'],['2','2열'],['3','3열'],['4','4열'],['5','5열'],['6','6열']].forEach(([v,label])=>{
@@ -1839,6 +2320,7 @@ document.getElementById('logoFile').onchange=e=>{
 };
 
 document.getElementById('btnCreate').onclick=openCreate;
+document.getElementById('btnAddBookmark').onclick=openAddBookmark;
 document.getElementById('btnSettings').onclick=openSettings;
 document.getElementById('navAll').onclick=()=>{ state.ui.view={type:'all'}; state.ui.page=1; save(); render(); };
 document.getElementById('navUncat').onclick=()=>{ state.ui.view={type:'uncat'}; state.ui.page=1; save(); render(); };
@@ -1890,12 +2372,24 @@ function syncSortDropUI(val){
 (function(){
   const rz=document.getElementById('resizer'), sb=document.getElementById('sidebar'); let dragging=false;
   rz.addEventListener('mousedown',()=>{ dragging=true; rz.classList.add('drag'); document.body.style.cursor='col-resize'; document.body.style.userSelect='none'; });
-  window.addEventListener('mousemove',e=>{ if(!dragging) return; let w=Math.min(520,Math.max(175,e.clientX)); sb.style.width=w+'px'; state.ui.sidebarWidth=w; });
+  window.addEventListener('mousemove',e=>{ if(!dragging) return; let w=Math.min(520,Math.max(175,e.clientX)); sb.style.width=w+'px'; state.ui.sidebarWidth=w; adjustTopButtons(); });
   window.addEventListener('mouseup',()=>{ if(dragging){ dragging=false; rz.classList.remove('drag'); document.body.style.cursor=''; document.body.style.userSelect=''; save(); } });
 })();
 
 /* ---------- 시작 ---------- */
-load().then(()=>{ render(); if(typeof applySidebarCollapsed==='function') applySidebarCollapsed(); });
+load().then(()=>{
+  render();
+  if(typeof applySidebarCollapsed==='function') applySidebarCollapsed();
+  if(dataLoadFailed){
+    // 저장 자체는 이미 막아뒀지만(save() 참고), 사용자가 "데이터가 사라졌다"고 오해해서 그냥 계속 쓰다가
+    // 새 북마크를 추가하는 등 혼란이 생기지 않도록 화면으로도 분명히 알려줌
+    openModal(`<h2 style="color:var(--danger)">⚠ 데이터 파일을 읽지 못했어요</h2>
+      <p style="color:var(--muted)">저장된 북마크 파일을 여는 데 문제가 생겼어요. 백신 프로그램이 잠깐 파일을 잠갔거나, 디스크 문제일 수 있어요.<br><br>
+      <b style="color:var(--text)">데이터가 사라진 건 아니에요.</b> 지금 상태에서는 실수로 덮어쓰지 않도록 저장 기능을 꺼두었으니,
+      새 북마크를 추가하지 마시고 프로그램을 완전히 종료했다가 다시 열어주세요.</p>
+      <div class="modal-actions"><button class="btn primary" onclick="closeModal()">확인했어요</button></div>`);
+  }
+});
 
 /* ---------- 사이드바 접기/펼치기 ---------- */
 function applySidebarCollapsed(){
@@ -1968,8 +2462,11 @@ if (window.electronAPI) {
     inst.style.display = '';
   });
 
-  // 설치하기
-  inst.onclick = () => window.electronAPI.installUpdate();
+  // 설치하기 — 확인창 없이 바로 백업 후 설치
+  inst.onclick = () => {
+    exportBackup();
+    window.electronAPI.installUpdate();
+  };
 
   // 닫기
   close.onclick = () => bar.classList.remove('show');
