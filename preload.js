@@ -7,4 +7,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   installUpdate: () => ipcRenderer.send('install-update'),
   loadData: () => ipcRenderer.invoke('data:load'),
   saveData: (json) => ipcRenderer.send('data:save', json),
+  fetchLinkPreview: (url) => ipcRenderer.invoke('link:preview', url),
 });
