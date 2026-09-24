@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Gowun+Batang&family=Gowun+Dodum&family=Nanum+Gothic&family=Nanum+Myeongjo&family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
 <style>
   @font-face {
     font-family: 'Pretendard';
@@ -503,12 +504,107 @@
 .rec-chip{border:none; cursor:pointer; opacity:.82; transition:.12s}
 .rec-chip:hover{opacity:1; transform:translateY(-1px)}
 .rec-chip.sel{box-shadow:0 0 0 2px var(--text); opacity:1}
+
+/* ---------- 모바일 접힘 사이드바 ---------- */
+.mobile-sidebar,.mobile-sidebar-backdrop,.mobile-sidebar-close,.mobile-pager,.mobile-account-menu,.mobile-folder-popover,.mobile-search-toggle{display:none}
+
+@media (max-width:760px){
+  *::-webkit-scrollbar{width:4px;height:4px}
+  .app{height:100dvh;min-height:100dvh;overflow:hidden}
+  .mobile-sidebar{display:flex;flex:0 0 clamp(58px,15vw,76px);width:clamp(58px,15vw,76px);height:100dvh;flex-direction:column;align-items:stretch;background:var(--surface);border-right:1px solid var(--border);position:relative;z-index:40;overflow:visible}
+  .mobile-sidebar-top{display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:1/3;padding:0;border:0;background:transparent;overflow:hidden;flex:none}
+  .mobile-sidebar-top img{display:block;width:100%;height:auto;max-height:100%;object-fit:contain;object-position:center}
+  .mobile-account-menu,.mobile-folder-popover{display:none;position:fixed;z-index:120;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 32px var(--shadow);overflow:hidden;color:var(--text)}
+  .mobile-account-menu.show,.mobile-folder-popover.show{display:block}
+  .mobile-account-menu{min-width:126px}
+  .mobile-popover-btn{display:block;width:100%;border:0;background:transparent;color:var(--text);padding:11px 14px;text-align:left;font:700 13px var(--font);white-space:nowrap}
+  .mobile-popover-btn:hover,.mobile-popover-btn:focus-visible{background:var(--accent-soft);color:var(--accent);outline:0}
+  .mobile-category-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:10px 7px;display:flex;flex-direction:column;align-items:center;gap:8px;scrollbar-width:thin}
+  .mobile-rail-sep{width:68%;height:1px;background:var(--border-soft);margin:2px 0}
+  .mobile-rail-btn{display:flex;align-items:center;justify-content:center;width:clamp(42px,11vw,54px);height:clamp(42px,11vw,54px);flex:none;border:0;border-radius:14px;background:transparent;color:var(--text);font-size:22px;font-weight:800}
+  .mobile-rail-btn.active{background:var(--accent);color:var(--accent-text)}
+  .mobile-rail-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .mobile-sidebar-bottom{flex:none;padding:8px 7px max(8px,env(safe-area-inset-bottom));border-top:1px solid var(--border-soft)}
+  .mobile-sidebar-expand{width:100%;height:46px;border:0;border-radius:12px;background:transparent;color:var(--text);font-size:23px;font-weight:800}
+  .mobile-sidebar-expand:hover{background:var(--accent-soft);color:var(--accent)}
+  .mobile-folder-popover{min-width:170px;max-width:min(260px,calc(100vw - 76px));overflow-y:auto;overscroll-behavior:contain}
+  .mobile-folder-title{padding:10px 14px 7px;font-size:12px;font-weight:800;color:var(--accent);border-bottom:1px solid var(--border-soft)}
+  .mobile-folder-empty{padding:14px;color:var(--muted);font-size:12px}
+  .mobile-folder-item{display:flex;gap:10px;align-items:center;width:100%;padding:11px 14px;border:0;background:transparent;color:var(--text);text-align:left;font:600 13px var(--font)}
+  .mobile-folder-item:hover,.mobile-folder-item.active{background:var(--accent-soft);color:var(--accent)}
+  .mobile-folder-item .count{margin-left:auto;color:var(--muted);font-size:11px}
+  .resizer{display:none}
+  .sidebar{display:none}
+  .sidebar.mobile-open{display:flex;position:fixed;inset:0 auto 0 0;z-index:100;width:min(82vw,320px)!important;min-width:0;max-width:none;height:100dvh;padding:0 18px max(16px,env(safe-area-inset-bottom));box-shadow:12px 0 34px rgba(0,0,0,.2)}
+  .sidebar.mobile-open>*{opacity:1}
+  .sidebar.mobile-open .cat-list{min-height:0}
+  .mobile-sidebar-close{display:block;position:absolute;right:10px;top:10px;z-index:4;width:36px;height:36px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--accent);font-size:18px;font-weight:800}
+  .mobile-sidebar-backdrop.show{display:block;position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.38)}
+  .main{min-width:0}
+  .main-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:14px 12px 8px}
+  #toggleSidebar{display:none}
+  .main-title{font-size:clamp(20px,6vw,28px)}
+  .mobile-search-toggle{display:flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--accent);font-size:23px}
+  .mobile-search-toggle:hover,.mobile-search-toggle[aria-expanded="true"]{background:var(--accent-soft)}
+  .mobile-search-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .search{display:none;grid-column:1/-1;width:100%;height:34px;padding:4px 11px}
+  .search.open{display:flex}
+  .search span{display:none}
+  .main-toolbar{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:6px;padding:0 12px 8px;justify-content:stretch}
+  .sortwrap{font-size:0;min-width:0}
+  .dropdown-btn{padding:7px 9px;font-size:11px;max-width:92px}
+  .main-toolbar>div[style]{display:none}
+  #btnDup{display:none}
+  #btnSelect{padding:7px 9px;font-size:11px;white-space:nowrap}
+  .mobile-pager{display:flex;min-width:0;justify-content:center;align-items:center;gap:2px;overflow:hidden}
+  .mobile-pager .page-btn{min-width:18px;height:30px;padding:0 2px;border:0;border-radius:7px;font-size:9px}
+  .sel-bar{padding:7px 12px;gap:5px}
+  .sel-bar .tool-btn{padding:6px 8px;font-size:10px}
+  .sel-bar-info{font-size:11px}
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px;padding:8px 10px 24px;overscroll-behavior:contain}
+  .card{height:clamp(292px,82vw,350px);border-radius:14px}
+  .card:hover{transform:none}
+  .card-imgwrap{height:clamp(82px,24vw,122px)}
+  .card-img-logo{padding:10px}
+  .card-body{padding:9px;gap:5px}
+  .card-tags{gap:3px;max-height:42px}
+  .pill{font-size:9px;padding:3px 7px}
+  .card-author{font-size:9px;min-height:14px}
+  .card-content{font-size:11px;line-height:1.4;min-height:4.2em;max-height:4.2em}
+  .card-links a{font-size:9px}
+  .card-foot{padding:5px 6px;gap:1px}
+  .mini-btn{font-size:9px;padding:4px 3px}
+  .pager{display:none}
+  .empty{font-size:12px;padding:28px 8px}
+  .modal{padding:18px;max-height:92dvh}
+  .overlay{padding:10px}
+}
+
+@media (max-width:760px) and (orientation:portrait){
+  .main-title{font-size:calc(clamp(20px,6vw,28px) - 2pt)}
+  .pill{font-size:calc(9px + 1pt)}
+  .card-author{font-size:calc(9px + 1pt)}
+  .card-content{font-size:calc(11px + 1pt)}
+  .card-links a{font-size:calc(9px + 1pt)}
+}
 </style>
 </head>
 <body>
 <div class="app">
+  <aside class="mobile-sidebar" id="mobileSidebar" aria-label="모바일 빠른 탐색">
+    <button class="mobile-sidebar-top" id="mobileProfileBtn" type="button" aria-haspopup="menu" aria-expanded="false" title="계정 메뉴"><img src="build/mobile-sidebar-top.png" alt="계정 메뉴 열기"></button>
+    <div class="mobile-account-menu" id="mobileAccountMenu" role="menu">
+      <button class="mobile-popover-btn" id="mobileLogin" type="button" role="menuitem">로그인</button>
+      <button class="mobile-popover-btn" id="mobileSettings" type="button" role="menuitem">환경설정</button>
+    </div>
+    <nav class="mobile-category-scroll" id="mobileCategoryList" aria-label="카테고리"></nav>
+    <div class="mobile-sidebar-bottom"><button class="mobile-sidebar-expand" id="mobileSidebarExpand" type="button" aria-label="전체 사이드바 펼치기">☰</button></div>
+  </aside>
+  <div class="mobile-folder-popover" id="mobileFolderPopover" role="dialog" aria-label="폴더 선택"></div>
+  <div class="mobile-sidebar-backdrop" id="mobileSidebarBackdrop"></div>
   <!-- 사이드바 -->
   <aside class="sidebar" id="sidebar">
+    <button class="mobile-sidebar-close" id="mobileSidebarClose" type="button" aria-label="사이드바 닫기">✕</button>
     <div class="logo" id="logo">로고</div>
     <div class="top-actions">
       <button id="btnLoad">불러오기</button>
@@ -551,7 +647,8 @@
     <div class="main-head">
       <button id="toggleSidebar" class="side-btn" title="사이드바 접기/펼치기">◀</button>
       <h1 class="main-title" id="mainTitle">전체보기</h1>
-      <div class="search">
+      <button class="mobile-search-toggle" id="mobileSearchToggle" type="button" aria-label="검색창 열기" aria-controls="searchWrap" aria-expanded="false"><i class="ph ph-magnifying-glass" aria-hidden="true"></i></button>
+      <div class="search" id="searchWrap">
         <span>🔍</span>
         <input id="searchInput" placeholder="이 폴더에서 검색">
       </div>
@@ -569,6 +666,7 @@
         </div>
       </div>
       <div style="flex:1"></div>
+      <div class="mobile-pager" id="mobilePager" aria-label="페이지 이동"></div>
       <button class="tool-btn" id="btnDup">⚠ 중복 확인</button>
       <button class="tool-btn" id="btnSelect">☑ 선택</button>
     </div>
@@ -601,6 +699,35 @@
    상태 & 저장
    ============================================================ */
 const STORE_KEY = 'xbm_organizer_v1';
+
+// 예전엔 링크 미리보기의 특수문자 처리가 부실해서(&#x27; &nbsp; 등) 그 코드가 그대로 텍스트에
+// 저장된 북마크들이 있음 — 업데이트 후 첫 로드 때 한 번만 훑어서 정리해줌 (아래 entitiesFixedV1 참고)
+const NAMED_ENTITIES = {
+  amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ',
+  rsquo: '’', lsquo: '‘', rdquo: '”', ldquo: '“',
+  ndash: '–', mdash: '—', hellip: '…',
+  copy: '©', reg: '®', trade: '™', middot: '·', bull: '•',
+};
+function decodeOnce(s){
+  return (s || '')
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(parseInt(dec, 10)))
+    .replace(/&([a-z]+);/gi, (m, name) => NAMED_ENTITIES[name.toLowerCase()] ?? m);
+}
+function decodeEntities(s){
+  return decodeOnce(decodeOnce(s || '')).trim();
+}
+// 이미 정리된 상태에서 또 돌리면(예: 내용에 우연히 "&amp;" 같은 글자가 진짜로 들어있는 경우)
+// 의도치 않게 다시 바뀔 수 있어서, 한 번 돌리고 나면 다시 실행되지 않도록 플래그로 막아둠
+function fixLegacyEntitiesOnce(){
+  if(state.entitiesFixedV1 || !state.bookmarks || !state.bookmarks.length){ state.entitiesFixedV1 = true; return; }
+  for(const b of state.bookmarks){
+    if(b.author) b.author = decodeEntities(b.author);
+    if(b.handle) b.handle = decodeEntities(b.handle);
+    if(b.content) b.content = decodeEntities(b.content);
+  }
+  state.entitiesFixedV1 = true;
+}
 const DEFAULT_LOGO = 'build/title-logo.png';
 // 브라우저(Electron 앱이 아닐 때)에서 링크 미리보기를 대신 가져와주는 Cloudflare Worker
 // — cloudflare-worker/link-preview.js 참고. CORS 때문에 브라우저는 다른 사이트를 직접 못 가져오므로 이 Worker가 대신 가져와서 돌려줌
@@ -654,6 +781,7 @@ function applyLoadedData(raw){
     state.ui = Object.assign({view:{type:'all'}, sidebarWidth:230, sort:'new', page:1, perPage:50}, d.ui||{});
     if(!state.ui.sidebarWidth || state.ui.sidebarWidth>=360) state.ui.sidebarWidth=230;
     state.ui.sidebarWidth=Math.min(520,Math.max(175,state.ui.sidebarWidth));
+    fixLegacyEntitiesOnce();
   }catch(e){}
 }
 // 데이터 파일이 있는데도(백신 프로그램이 잠깐 잠갔거나 디스크 문제 등으로) 못 읽은 경우를 표시해두는 플래그.
@@ -1107,6 +1235,56 @@ function renderSidebar(){
     div.appendChild(fwrap);
     wrap.appendChild(div);
   });
+  renderMobileSidebar(folderCounts);
+}
+
+function closeMobilePopovers(){
+  document.getElementById('mobileAccountMenu').classList.remove('show');
+  document.getElementById('mobileFolderPopover').classList.remove('show');
+  document.getElementById('mobileProfileBtn').setAttribute('aria-expanded','false');
+}
+function closeMobileSidebar(){
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('mobileSidebarBackdrop').classList.remove('show');
+}
+function renderMobileSidebar(folderCounts){
+  const wrap=document.getElementById('mobileCategoryList');
+  if(!wrap) return;
+  wrap.innerHTML='';
+  const addButton=(label,icon,active,onClick)=>{
+    const b=document.createElement('button'); b.type='button'; b.className='mobile-rail-btn'+(active?' active':'');
+    if(icon.startsWith('<i ')) b.innerHTML=icon; else b.textContent=icon;
+    b.title=label; b.setAttribute('aria-label',label); b.onclick=onClick; wrap.appendChild(b); return b;
+  };
+  const v=state.ui.view;
+  addButton('전체보기','<i class="ph ph-archive" aria-hidden="true"></i>',v.type==='all',()=>{ state.ui.view={type:'all'}; state.ui.page=1; save(); closeMobilePopovers(); render(); });
+  addButton('미분류','<i class="ph ph-read-cv-logo" aria-hidden="true"></i>',v.type==='uncat',()=>{ state.ui.view={type:'uncat'}; state.ui.page=1; save(); closeMobilePopovers(); render(); });
+  const sep=document.createElement('div'); sep.className='mobile-rail-sep'; wrap.appendChild(sep);
+  state.categories.forEach(cat=>{
+    const icon=(cat.emoji||'📁').trim()||'📁';
+    const active=cat.folders.some(f=>v.type==='folder'&&v.folderId===f.id);
+    addButton(cat.name,icon,active,e=>openMobileFolderPopover(cat,e.currentTarget,folderCounts));
+  });
+}
+function openMobileFolderPopover(cat, anchor, folderCounts){
+  const pop=document.getElementById('mobileFolderPopover');
+  document.getElementById('mobileAccountMenu').classList.remove('show');
+  pop.innerHTML=`<div class="mobile-folder-title">${esc((cat.emoji?cat.emoji+' ':'')+cat.name)}</div>`;
+  if(!cat.folders.length) pop.insertAdjacentHTML('beforeend','<div class="mobile-folder-empty">폴더가 없어요.</div>');
+  cat.folders.forEach(f=>{
+    const b=document.createElement('button'); b.type='button'; b.className='mobile-folder-item'+(state.ui.view.type==='folder'&&state.ui.view.folderId===f.id?' active':'');
+    b.innerHTML=`<span>${esc(f.name)}</span><span class="count">${folderCounts.get(f.id)||0}</span>`;
+    b.onclick=()=>{ state.ui.view={type:'folder',folderId:f.id}; state.ui.page=1; save(); closeMobilePopovers(); render(); };
+    pop.appendChild(b);
+  });
+  pop.classList.add('show');
+  const rail=document.getElementById('mobileSidebar').getBoundingClientRect();
+  const ar=anchor.getBoundingClientRect();
+  const bottomLimit=document.querySelector('.mobile-sidebar-bottom').getBoundingClientRect().top-8;
+  const maxHeight=Math.max(96,bottomLimit-8);
+  pop.style.left=(rail.right+6)+'px'; pop.style.maxHeight=maxHeight+'px'; pop.style.top=ar.top+'px';
+  const ph=Math.min(pop.scrollHeight,maxHeight);
+  if(ar.top+ph>bottomLimit) pop.style.top=Math.max(8,ar.bottom-ph)+'px';
 }
 
 function renderMain(){
@@ -1114,32 +1292,42 @@ function renderMain(){
   syncSortDropUI(state.ui.sort||'new');
   const cards=document.getElementById('cards'); cards.innerHTML='';
   const list=viewBookmarks();
+  const perPage=state.ui.perPage||50;
+  const pages=Math.max(1, Math.ceil(list.length/perPage));
+  if(!state.ui.page || state.ui.page<1){ state.ui.page=1; save(); }
+  if(state.ui.page>pages){ state.ui.page=pages; save(); }
+  const page=state.ui.page;
+  renderMobilePager(page,pages);
   if(!list.length){ cards.innerHTML='<div class="empty">표시할 북마크가 없어요.<br>좌측 [불러오기]로 CSV를 가져오거나 다른 폴더를 선택해 보세요.</div>'; return; }
   if(state.ui.sort==='custom'){
     cards.insertAdjacentHTML('beforeend','<div class="empty" style="padding:6px 0 0;grid-column:1/-1;font-size:12.5px">↕ 카드를 드래그해 순서를 바꿀 수 있어요</div>');
   }
-  const perPage=state.ui.perPage||50;
-  const pages=Math.max(1, Math.ceil(list.length/perPage));
-  if(!state.ui.page || state.ui.page<1) state.ui.page=1;
-  if(state.ui.page>pages) state.ui.page=pages;
-  const page=state.ui.page, start=(page-1)*perPage;
+  const start=(page-1)*perPage;
   list.slice(start, start+perPage).forEach(bm=>{ const c=makeCard(bm); if(selMode){ c.classList.add('sel-mode'); if(selIds.has(bm.id)) c.classList.add('selected'); } cards.appendChild(c); });
   cards.appendChild(makePager(list.length, page, pages, perPage));
 }
 function gotoPage(p){ state.ui.page=p; save(); renderMain(); const c=document.getElementById('cards'); if(c) c.scrollTop=0; }
-function makePager(total, page, pages, perPage){
-  const wrap=document.createElement('div'); wrap.className='pager';
-  const center=document.createElement('div'); center.className='pager-center';
-  const nav=document.createElement('div'); nav.className='pager-nav';
+function makePagerNav(page,pages,compact=false){
+  const nav=document.createElement('div'); nav.className=compact?'mobile-pager':'pager-nav';
   const mk=(label,p,o={})=>{ const b=document.createElement('button');
     b.className='page-btn'+(o.active?' active':'')+(o.dis?' dis':''); b.textContent=label;
     if(o.dis) b.disabled=true; else if(!o.active && p) b.onclick=()=>gotoPage(p); return b; };
-  nav.appendChild(mk('‹', page-1, {dis:page<=1}));
-  const win=2; let s=Math.max(1,page-win), e=Math.min(pages,page+win);
+  nav.appendChild(mk('‹',page-1,{dis:page<=1}));
+  const win=compact?1:2; let s=Math.max(1,page-win),e=Math.min(pages,page+win);
   if(s>1){ nav.appendChild(mk('1',1,{active:page===1})); if(s>2) nav.appendChild(mk('…',null,{dis:true})); }
   for(let p=s;p<=e;p++) nav.appendChild(mk(String(p),p,{active:p===page}));
   if(e<pages){ if(e<pages-1) nav.appendChild(mk('…',null,{dis:true})); nav.appendChild(mk(String(pages),pages,{active:page===pages})); }
-  nav.appendChild(mk('›', page+1, {dis:page>=pages}));
+  nav.appendChild(mk('›',page+1,{dis:page>=pages}));
+  return nav;
+}
+function renderMobilePager(page,pages){
+  const host=document.getElementById('mobilePager'); if(!host) return;
+  const nav=makePagerNav(page,pages,true); host.replaceChildren(...nav.childNodes);
+}
+function makePager(total, page, pages, perPage){
+  const wrap=document.createElement('div'); wrap.className='pager';
+  const center=document.createElement('div'); center.className='pager-center';
+  const nav=makePagerNav(page,pages);
   center.appendChild(nav);
 
   const info=document.createElement('div'); info.className='pager-info';
@@ -1147,13 +1335,9 @@ function makePager(total, page, pages, perPage){
   info.textContent=`${from}–${to} / 총 ${total}개`;
   center.appendChild(info);
 
-  const pp=document.createElement('div'); pp.className='pager-pp';
-  [20,30,50,100].forEach(n=>{ const b=document.createElement('button'); b.className='pp-btn'+(perPage===n?' active':''); b.textContent=n+'개';
-    b.onclick=()=>{ state.ui.perPage=n; state.ui.page=1; save(); renderMain(); const c=document.getElementById('cards'); if(c) c.scrollTop=0; }; pp.appendChild(b); });
-
   wrap.appendChild(document.createElement('div')); // 좌측 여백
   wrap.appendChild(center);
-  wrap.appendChild(pp);
+  wrap.appendChild(document.createElement('div')); // 우측 여백
   return wrap;
 }
 
@@ -1364,6 +1548,12 @@ document.addEventListener('keydown',e=>{
   const target=e.target;
   const isTextArea=target && target.tagName==='TEXTAREA';
   if(e.key==='Escape'){
+    if(document.getElementById('mobileAccountMenu').classList.contains('show') || document.getElementById('mobileFolderPopover').classList.contains('show')){ closeMobilePopovers(); e.preventDefault(); return; }
+    if(document.getElementById('sidebar').classList.contains('mobile-open')){ closeMobileSidebar(); e.preventDefault(); return; }
+    const mobileSearch=document.getElementById('searchWrap');
+    if(mobileSearch.classList.contains('open') && !document.getElementById('searchInput').value){
+      mobileSearch.classList.remove('open'); document.getElementById('mobileSearchToggle').setAttribute('aria-expanded','false'); e.preventDefault(); return;
+    }
     const openDrop=document.querySelector('.tag-ac-drop.show');
     if(openDrop){ openDrop.classList.remove('show'); (openDrop._wrap||openDrop.closest('.dropdown-wrap'))?.classList.remove('open'); e.preventDefault(); return; }
     if(closeTopModal()){ e.preventDefault(); return; }
@@ -2107,6 +2297,8 @@ function openSettings(){
     <select id="setFont">${fontOpts}</select>
     <label>카드 배열 (한 줄에 보이는 개수)</label>
     <div class="col-opts" id="setCols"></div>
+    <label>페이지당 표시할 북마크 수</label>
+    <div class="col-opts" id="setPerPage"></div>
     <label>로고 이미지</label>
     <div class="row" style="align-items:center">
       <button class="btn" id="setLogo">파일 선택</button>
@@ -2189,6 +2381,15 @@ function openSettings(){
     [['auto','자동'],['2','2열'],['3','3열'],['4','4열'],['5','5열'],['6','6열']].forEach(([v,label])=>{
       const b=document.createElement('button'); b.className='pp-btn'+(String(cur)===v?' active':''); b.textContent=label;
       b.onclick=()=>{ state.settings.columns=(v==='auto')?'auto':parseInt(v,10); save(); applyTheme(); renderMain();
+        box.querySelectorAll('.pp-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); };
+      box.appendChild(b);
+    });
+  })();
+  (function(){
+    const box=document.getElementById('setPerPage'); const cur=state.ui.perPage||50;
+    [20,30,50,100].forEach(n=>{
+      const b=document.createElement('button'); b.type='button'; b.className='pp-btn'+(cur===n?' active':''); b.textContent=n+'개';
+      b.onclick=()=>{ state.ui.perPage=n; state.ui.page=1; save(); renderMain();
         box.querySelectorAll('.pp-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); };
       box.appendChild(b);
     });
@@ -2322,6 +2523,20 @@ document.getElementById('logoFile').onchange=e=>{
 document.getElementById('btnCreate').onclick=openCreate;
 document.getElementById('btnAddBookmark').onclick=openAddBookmark;
 document.getElementById('btnSettings').onclick=openSettings;
+document.getElementById('mobileSettings').onclick=()=>{ closeMobilePopovers(); openSettings(); };
+document.getElementById('mobileLogin').onclick=()=>{ closeMobilePopovers(); showToast('로그인 기능은 추후 Google Drive 연동 시 제공할 예정이에요.'); };
+document.getElementById('mobileProfileBtn').onclick=e=>{
+  e.stopPropagation();
+  const menu=document.getElementById('mobileAccountMenu'); const btn=e.currentTarget; const rect=btn.getBoundingClientRect();
+  const show=!menu.classList.contains('show'); closeMobilePopovers();
+  if(show){ menu.style.left=(rect.right+6)+'px'; menu.style.top=Math.max(8,rect.top+8)+'px'; menu.classList.add('show'); btn.setAttribute('aria-expanded','true'); }
+};
+document.getElementById('mobileSidebarExpand').onclick=()=>{ closeMobilePopovers(); document.getElementById('sidebar').classList.add('mobile-open'); document.getElementById('mobileSidebarBackdrop').classList.add('show'); };
+document.getElementById('mobileSidebarClose').onclick=closeMobileSidebar;
+document.getElementById('mobileSidebarBackdrop').onclick=closeMobileSidebar;
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#mobileProfileBtn,#mobileAccountMenu,#mobileFolderPopover,.mobile-rail-btn')) closeMobilePopovers();
+});
 document.getElementById('navAll').onclick=()=>{ state.ui.view={type:'all'}; state.ui.page=1; save(); render(); };
 document.getElementById('navUncat').onclick=()=>{ state.ui.view={type:'uncat'}; state.ui.page=1; save(); render(); };
 ['navAll','navUncat'].forEach(id=>{ const el=document.getElementById(id);
@@ -2330,6 +2545,13 @@ document.getElementById('navUncat').onclick=()=>{ state.ui.view={type:'uncat'}; 
   el.addEventListener('drop',ev=>{ev.preventDefault(); el.classList.remove('drop-hot'); if(id==='navUncat') moveBookmark(ev.dataTransfer.getData('text'),null);});
 });
 document.getElementById('searchInput').oninput=()=>{ state.ui.page=1; renderMain(); };
+document.getElementById('mobileSearchToggle').onclick=()=>{
+  const wrap=document.getElementById('searchWrap');
+  const btn=document.getElementById('mobileSearchToggle');
+  const open=!wrap.classList.contains('open');
+  wrap.classList.toggle('open',open); btn.setAttribute('aria-expanded',String(open));
+  if(open) requestAnimationFrame(()=>document.getElementById('searchInput').focus());
+};
 document.getElementById('btnDup').onclick=openDuplicateCheck;
 
 /* ---------- 정렬 드롭다운 (태그 자동완성과 같은 디자인) ---------- */
@@ -2379,6 +2601,7 @@ function syncSortDropUI(val){
 /* ---------- 시작 ---------- */
 load().then(()=>{
   render();
+  save(); // 특수문자 정리 등 로드 중 있었을 수 있는 마이그레이션 결과를 바로 반영 (dataLoadFailed면 save()가 알아서 무시함)
   if(typeof applySidebarCollapsed==='function') applySidebarCollapsed();
   if(dataLoadFailed){
     // 저장 자체는 이미 막아뒀지만(save() 참고), 사용자가 "데이터가 사라졌다"고 오해해서 그냥 계속 쓰다가
