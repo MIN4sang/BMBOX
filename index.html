@@ -90,6 +90,7 @@
     --border-soft: color-mix(in srgb, var(--accent) 16%, var(--bg));
     --muted: color-mix(in srgb, var(--text) 45%, var(--bg));
     --accent-soft: color-mix(in srgb, var(--accent) 12%, var(--bg));
+    --icon-color: color-mix(in srgb, var(--accent) 36%, var(--text));
     --accent-text: #fff;
     --danger:#ff4d6d;
     --shadow: rgba(0,0,0,.08);
@@ -229,7 +230,9 @@
     width:100%; text-align:center; padding:9px; border:none; background:transparent;
     color:var(--text); font-weight:700; font-size:13.5px; border-radius:10px;
   }
+  .foot-btn i{color:var(--icon-color)}
   .foot-btn:hover{background:var(--surface-2); color:var(--accent)}
+  .foot-btn:hover i{color:inherit}
   .credit{text-align:center; font-size:12px; color:var(--muted); margin-top:6px}
   .version-tag{position:relative; cursor:default; width:fit-content; margin-left:auto; margin-right:auto}
   .version-tooltip{
@@ -273,16 +276,18 @@
     display:inline-flex; align-items:center; gap:6px;
   }
   .dropdown-btn:hover{background:var(--surface-2)}
-  .dropdown-arrow{font-size:11px; color:var(--muted); transition:transform .15s}
-  .dropdown-wrap.open .dropdown-arrow{transform:rotate(180deg)}
-  .dropdown-menu{min-width:140px; width:max-content; left:0; right:auto}
+  .dropdown-arrow{font-size:11px; color:var(--icon-color); transition:transform .15s,color .15s}
+  .dropdown-wrap.open .dropdown-arrow{transform:rotate(180deg);color:var(--accent)}
+  .dropdown-menu{min-width:140px; width:max-content; max-width:calc(100vw - 24px); left:0; right:auto}
+  .dropdown-menu .tag-ac-item{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .main-toolbar .dropdown-menu{left:auto; right:0}
   .dropdown-menu .tag-ac-item.sel{color:var(--accent); font-weight:700}
   /* 네이티브 <select>를 이 디자인으로 덮어씌우는 커스텀 드롭다운 (skinSelect 참고) */
-  .custom-select-wrap{border-radius:999px}
-  .custom-select-btn{width:100%; justify-content:space-between; border-radius:10px; padding:9px 12px; font-weight:600}
+  .custom-select-wrap{width:100%; min-width:0; max-width:100%; border-radius:999px}
+  .custom-select-btn{width:100%; min-width:0; max-width:none; justify-content:space-between; border-radius:10px; padding:9px 12px; font-weight:600}
   .custom-select-btn .dropdown-arrow{flex:none}
   .custom-select-label{flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left}
-  .custom-select-menu{width:100%; min-width:0; border-radius:10px}
+  .custom-select-menu{width:100%; min-width:0; max-width:calc(100vw - 24px); border-radius:10px}
   /* 메뉴를 body 바로 아래로 옮겨서(포털) 모달의 overflow에 잘리지 않게 함 — 위치는 JS(skinSelect)가 버튼 기준으로 계산해서 넣어줌 */
   .custom-select-menu-portal{position:fixed; left:auto; right:auto; top:auto}
   .select-group-label{padding:9px 14px 4px; font-size:11px; font-weight:800; color:var(--muted); letter-spacing:.3px}
@@ -455,7 +460,7 @@
   border-radius:8px;
 
   background:var(--card);
-  color:var(--accent);
+  color:var(--icon-color);
 
   font-size:16px;
   font-weight:bold;
@@ -477,7 +482,7 @@
   border-radius:10px;
 
   background:var(--card);
-  color:var(--accent);
+  color:var(--icon-color);
 
   font-size:18px;
   font-weight:700;
@@ -506,7 +511,8 @@
 .rec-chip.sel{box-shadow:0 0 0 2px var(--text); opacity:1}
 
 /* ---------- 모바일 접힘 사이드바 ---------- */
-.mobile-sidebar,.mobile-sidebar-backdrop,.mobile-sidebar-close,.mobile-pager,.mobile-account-menu,.mobile-folder-popover,.mobile-search-toggle{display:none}
+.mobile-sidebar,.mobile-sidebar-backdrop,.mobile-sidebar-close,.mobile-pager,.mobile-account-menu,.mobile-folder-popover,.mobile-search-toggle,.mobile-setting-only{display:none}
+.foot-btn i,.mobile-popover-btn i{font-size:1.1em;vertical-align:-.1em;margin-right:5px;color:var(--icon-color)}
 
 @media (max-width:760px){
   *::-webkit-scrollbar{width:4px;height:4px}
@@ -519,13 +525,14 @@
   .mobile-account-menu{min-width:126px}
   .mobile-popover-btn{display:block;width:100%;border:0;background:transparent;color:var(--text);padding:11px 14px;text-align:left;font:700 13px var(--font);white-space:nowrap}
   .mobile-popover-btn:hover,.mobile-popover-btn:focus-visible{background:var(--accent-soft);color:var(--accent);outline:0}
+  .mobile-popover-btn:hover i,.mobile-popover-btn:focus-visible i{color:inherit}
   .mobile-category-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:10px 7px;display:flex;flex-direction:column;align-items:center;gap:8px;scrollbar-width:thin}
   .mobile-rail-sep{width:68%;height:1px;background:var(--border-soft);margin:2px 0}
-  .mobile-rail-btn{display:flex;align-items:center;justify-content:center;width:clamp(42px,11vw,54px);height:clamp(42px,11vw,54px);flex:none;border:0;border-radius:14px;background:transparent;color:var(--text);font-size:22px;font-weight:800}
+  .mobile-rail-btn{display:flex;align-items:center;justify-content:center;width:clamp(42px,11vw,54px);height:clamp(42px,11vw,54px);flex:none;border:0;border-radius:14px;background:transparent;color:var(--icon-color);font-size:22px;font-weight:800}
   .mobile-rail-btn.active{background:var(--accent);color:var(--accent-text)}
   .mobile-rail-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-  .mobile-sidebar-bottom{flex:none;padding:8px 7px max(8px,env(safe-area-inset-bottom));border-top:1px solid var(--border-soft)}
-  .mobile-sidebar-expand{width:100%;height:46px;border:0;border-radius:12px;background:transparent;color:var(--text);font-size:23px;font-weight:800}
+  .mobile-sidebar-bottom{display:flex;align-items:center;justify-content:center;flex:none;padding:0 0 max(10px,env(safe-area-inset-bottom));border-top:0}
+  .mobile-sidebar-expand{display:flex;align-items:center;justify-content:center;width:38px;height:38px;padding:10px;border:0;border-radius:12px;background:transparent;color:var(--icon-color);font-size:18px;font-weight:800;line-height:1}
   .mobile-sidebar-expand:hover{background:var(--accent-soft);color:var(--accent)}
   .mobile-folder-popover{min-width:170px;max-width:min(260px,calc(100vw - 76px));overflow-y:auto;overscroll-behavior:contain}
   .mobile-folder-title{padding:10px 14px 7px;font-size:12px;font-weight:800;color:var(--accent);border-bottom:1px solid var(--border-soft)}
@@ -540,19 +547,21 @@
   .sidebar.mobile-open .cat-list{min-height:0}
   .mobile-sidebar-close{display:block;position:absolute;right:10px;top:10px;z-index:4;width:36px;height:36px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--accent);font-size:18px;font-weight:800}
   .mobile-sidebar-backdrop.show{display:block;position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.38)}
+  .mobile-setting-only{display:block}
   .main{min-width:0}
   .main-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:14px 12px 8px}
   #toggleSidebar{display:none}
   .main-title{font-size:clamp(20px,6vw,28px)}
-  .mobile-search-toggle{display:flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--accent);font-size:23px}
-  .mobile-search-toggle:hover,.mobile-search-toggle[aria-expanded="true"]{background:var(--accent-soft)}
+  .mobile-search-toggle{display:flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--icon-color);font-size:23px}
+  .mobile-search-toggle:hover,.mobile-search-toggle[aria-expanded="true"]{background:var(--accent-soft);color:var(--accent)}
   .mobile-search-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   .search{display:none;grid-column:1/-1;width:100%;height:34px;padding:4px 11px}
   .search.open{display:flex}
   .search span{display:none}
   .main-toolbar{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:6px;padding:0 12px 8px;justify-content:stretch}
   .sortwrap{font-size:0;min-width:0}
-  .dropdown-btn{padding:7px 9px;font-size:11px;max-width:92px}
+  .main-toolbar .dropdown-btn{padding:7px 9px;font-size:11px;max-width:92px}
+  .main-toolbar .dropdown-menu{left:0;right:auto}
   .main-toolbar>div[style]{display:none}
   #btnDup{display:none}
   #btnSelect{padding:7px 9px;font-size:11px;white-space:nowrap}
@@ -582,6 +591,8 @@
 
 @media (max-width:760px) and (orientation:portrait){
   .main-title{font-size:calc(clamp(20px,6vw,28px) - 2pt)}
+  .card{height:clamp(292px,72vw,316px)}
+  .card-tags{max-height:46px}
   .pill{font-size:calc(9px + 1pt)}
   .card-author{font-size:calc(9px + 1pt)}
   .card-content{font-size:calc(11px + 1pt)}
@@ -592,10 +603,10 @@
 <body>
 <div class="app">
   <aside class="mobile-sidebar" id="mobileSidebar" aria-label="모바일 빠른 탐색">
-    <button class="mobile-sidebar-top" id="mobileProfileBtn" type="button" aria-haspopup="menu" aria-expanded="false" title="계정 메뉴"><img src="build/mobile-sidebar-top.png" alt="계정 메뉴 열기"></button>
+    <button class="mobile-sidebar-top" id="mobileProfileBtn" type="button" aria-haspopup="menu" aria-expanded="false" title="계정 메뉴"><img id="mobileSidebarImage" src="build/mobile-sidebar-top.png" alt="계정 메뉴 열기"></button>
     <div class="mobile-account-menu" id="mobileAccountMenu" role="menu">
       <button class="mobile-popover-btn" id="mobileLogin" type="button" role="menuitem">로그인</button>
-      <button class="mobile-popover-btn" id="mobileSettings" type="button" role="menuitem">환경설정</button>
+      <button class="mobile-popover-btn" id="mobileSettings" type="button" role="menuitem"><i class="ph ph-gear" aria-hidden="true"></i>환경설정</button>
     </div>
     <nav class="mobile-category-scroll" id="mobileCategoryList" aria-label="카테고리"></nav>
     <div class="mobile-sidebar-bottom"><button class="mobile-sidebar-expand" id="mobileSidebarExpand" type="button" aria-label="전체 사이드바 펼치기">☰</button></div>
@@ -615,7 +626,7 @@
     <div class="nav-item" id="navUncat" data-view="uncat" data-drop="uncat">미분류 <span class="count" id="cntUncat">0</span></div>
     <div class="cat-list" id="catList"></div>
     <div class="sidebar-foot">
-      <button class="foot-btn" id="btnSettings">⚙ 환경설정</button>
+      <button class="foot-btn" id="btnSettings"><i class="ph ph-gear" aria-hidden="true"></i>환경설정</button>
       <div class="credit"><a href="https://x.com/5golgyeo" target="_blank" rel="noopener">오골계</a></div>
       <div class="credit version-tag" style="opacity:.9;margin-top:2px">보관함 v.3
         <div class="version-tooltip">
@@ -685,6 +696,7 @@
 <!-- 숨김 파일 입력 -->
 <input type="file" id="csvFile" accept=".csv" multiple style="display:none">
 <input type="file" id="backupFile" accept=".json" style="display:none">
+<input type="file" id="mobileMenuImageFile" accept=".png,.jpg,.jpeg,.gif,image/png,image/jpeg,image/gif" style="display:none">
 <input type="file" id="logoFile" accept=".png,.jpg,.jpeg,.gif,image/png,image/jpeg,image/gif" style="display:none">
 
 <!-- 모달 컨테이너 -->
@@ -729,13 +741,14 @@ function fixLegacyEntitiesOnce(){
   state.entitiesFixedV1 = true;
 }
 const DEFAULT_LOGO = 'build/title-logo.png';
+const DEFAULT_MOBILE_MENU_IMAGE = 'build/mobile-sidebar-top.png';
 // 브라우저(Electron 앱이 아닐 때)에서 링크 미리보기를 대신 가져와주는 Cloudflare Worker
 // — cloudflare-worker/link-preview.js 참고. CORS 때문에 브라우저는 다른 사이트를 직접 못 가져오므로 이 Worker가 대신 가져와서 돌려줌
 const LINK_PREVIEW_WORKER_URL = 'https://bookmarkbox.n4n4b4.workers.dev/';
 let state = {
   categories: [],          // {id, emoji, name, collapsed, folders:[{id,name}]}
   bookmarks: [],           // {id, tags[], author, handle, content, imageUrl, hasVideo, date, postUrl, links[], folderId}
-  settings: { accent:'#ff5c8a', bg:'#fffafc', text:'#3a2f33', font:'noto', logo:null, logoSize:120, columns:'auto', tagRecommend:true, enableAddBookmark:false },
+  settings: { accent:'#ff5c8a', bg:'#fffafc', text:'#3a2f33', font:'noto', logo:null, mobileMenuImage:null, logoSize:120, columns:'auto', tagRecommend:true, enableAddBookmark:false },
   ui: { view:{type:'all'}, sidebarWidth:230, sort:'new', page:1, perPage:50 },
 };
 
@@ -777,7 +790,7 @@ function applyLoadedData(raw){
   if(!raw) return;
   try{
     const d = JSON.parse(raw); state = Object.assign(state, d);
-    state.settings = Object.assign({accent:'#ff5c8a',bg:'#fffafc',text:'#3a2f33',font:'noto',logo:null, logoSize:120, columns:'auto', tagRecommend:true, enableAddBookmark:false}, d.settings||{});
+    state.settings = Object.assign({accent:'#ff5c8a',bg:'#fffafc',text:'#3a2f33',font:'noto',logo:null,mobileMenuImage:null, logoSize:120, columns:'auto', tagRecommend:true, enableAddBookmark:false}, d.settings||{});
     state.ui = Object.assign({view:{type:'all'}, sidebarWidth:230, sort:'new', page:1, perPage:50}, d.ui||{});
     if(!state.ui.sidebarWidth || state.ui.sidebarWidth>=360) state.ui.sidebarWidth=230;
     state.ui.sidebarWidth=Math.min(520,Math.max(175,state.ui.sidebarWidth));
@@ -1034,6 +1047,8 @@ function applyTheme(){
          width:${s.logoSize||120}px;
          height:auto;
          display:block;">`;
+  const mobileMenuImage=document.getElementById('mobileSidebarImage');
+  if(mobileMenuImage) mobileMenuImage.src=s.mobileMenuImage||DEFAULT_MOBILE_MENU_IMAGE;
 
   // "북마크 추가" 버튼: 환경설정에서 켠 사람만 보이게 (필요 없는 사람도 있을 수 있어서 기본은 꺼짐)
   const addBtn=document.getElementById('btnAddBookmark');
@@ -1832,20 +1847,26 @@ function skinSelect(select){
   };
   const positionMenu=()=>{
     const r=btn.getBoundingClientRect();
-    const spaceBelow=window.innerHeight - r.bottom - 12;
-    const spaceAbove=r.top - 12;
-    menu.style.left=r.left+'px';
-    menu.style.width=r.width+'px';
+    const viewportWidth=document.documentElement.clientWidth||window.innerWidth;
+    const viewportHeight=document.documentElement.clientHeight||window.innerHeight;
+    const edge=12;
+    const menuWidth=Math.min(r.width, Math.max(0,viewportWidth-edge*2));
+    const menuLeft=Math.min(Math.max(r.left,edge), Math.max(edge,viewportWidth-menuWidth-edge));
+    const spaceBelow=Math.max(0,viewportHeight-r.bottom-edge);
+    const spaceAbove=Math.max(0,r.top-edge);
+    menu.style.left=menuLeft+'px';
+    menu.style.width=menuWidth+'px';
     if(spaceBelow<120 && spaceAbove>spaceBelow){
       menu.style.top='';
-      menu.style.bottom=(window.innerHeight - r.top + 4)+'px';
+      menu.style.bottom=(viewportHeight-r.top+4)+'px';
       menu.style.maxHeight=Math.min(240, spaceAbove)+'px';
     } else {
       menu.style.bottom='';
       menu.style.top=(r.bottom+4)+'px';
-      menu.style.maxHeight=Math.min(240, Math.max(120, spaceBelow))+'px';
+      menu.style.maxHeight=Math.min(240, spaceBelow)+'px';
     }
   };
+  menu._position=positionMenu;
   const closeMenu=()=>{ menu.classList.remove('show'); wrap.classList.remove('open'); };
   const openMenu=()=>{
     document.querySelectorAll('.custom-select-menu-portal.show').forEach(m=>{ if(m!==menu){ m.classList.remove('show'); m._wrap?.classList.remove('open'); } });
@@ -1878,9 +1899,11 @@ function skinSelect(select){
         m.classList.remove('show'); m._wrap?.classList.remove('open');
       });
     }, true);
-    window.addEventListener('resize', ()=>{
-      document.querySelectorAll('.custom-select-menu-portal.show').forEach(m=>{ m.classList.remove('show'); m._wrap?.classList.remove('open'); });
-    });
+    const repositionOpenMenus=()=>{
+      document.querySelectorAll('.custom-select-menu-portal.show').forEach(m=>m._position?.());
+    };
+    window.addEventListener('resize', repositionOpenMenus);
+    window.visualViewport?.addEventListener('resize', repositionOpenMenus);
   }
 }
 
@@ -2299,6 +2322,14 @@ function openSettings(){
     <div class="col-opts" id="setCols"></div>
     <label>페이지당 표시할 북마크 수</label>
     <div class="col-opts" id="setPerPage"></div>
+    <div class="mobile-setting-only">
+      <label>메뉴바 이미지</label>
+      <div class="row" style="align-items:center">
+        <button class="btn" id="setMobileMenuImage">파일 선택</button>
+        <button class="btn ghost" id="clearMobileMenuImage">기본 이미지로 복원</button>
+      </div>
+      <div class="hint">권장 이미지 크기: 152 × 230px. 모바일 접힘 메뉴 상단에 표시할 PNG, JPG 또는 GIF 이미지를 선택합니다.</div>
+    </div>
     <label>로고 이미지</label>
     <div class="row" style="align-items:center">
       <button class="btn" id="setLogo">파일 선택</button>
@@ -2394,6 +2425,8 @@ function openSettings(){
       box.appendChild(b);
     });
   })();
+  document.getElementById('setMobileMenuImage').onclick=()=>document.getElementById('mobileMenuImageFile').click();
+  document.getElementById('clearMobileMenuImage').onclick=()=>{ state.settings.mobileMenuImage=null; save(); applyTheme(); };
   document.getElementById('setLogo').onclick=()=>document.getElementById('logoFile').click();
   document.getElementById('clearLogo').onclick=()=>{ state.settings.logo=null; save(); applyTheme(); document.getElementById('setLogoUrl').value=''; };
   document.getElementById('setLogoUrl').onchange=e=>{ const u=e.target.value.trim(); state.settings.logo=u||null; save(); applyTheme(); };
@@ -2497,6 +2530,16 @@ document.getElementById('backupFile').onchange=e=>{
   const f=e.target.files[0]; if(!f) return;
   const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); state=Object.assign(state,d); save(); render(); closeModal(); showToast('백업을 불러왔어요.'); }catch(err){ showToast('백업 파일을 읽을 수 없어요.'); } };
   r.readAsText(f,'utf-8'); e.target.value='';
+};
+document.getElementById('mobileMenuImageFile').onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  if(!/\.(png|jpe?g|gif)$/i.test(f.name)){
+    showToast('메뉴바 이미지는 PNG, JPG, GIF 파일만 사용할 수 있어요.'); e.target.value=''; return;
+  }
+  const r=new FileReader();
+  r.onload=()=>{ state.settings.mobileMenuImage=r.result; save(); applyTheme(); showToast('메뉴바 이미지를 변경했어요.'); };
+  r.onerror=()=>showToast('메뉴바 이미지를 읽을 수 없어요.');
+  r.readAsDataURL(f); e.target.value='';
 };
 document.getElementById('logoFile').onchange=e=>{
   const f=e.target.files[0]; if(!f) return;
